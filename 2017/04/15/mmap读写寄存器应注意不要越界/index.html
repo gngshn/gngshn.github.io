@@ -9,13 +9,13 @@
   <title>mmap读写寄存器应注意不要越界 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
-<meta name="keywords" content="mmap,driver,linux">
+<meta name="keywords" content="driver,linux,mmap">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mmap读写寄存器应注意不要越界">
 <meta property="og:url" content="http://gngshn.github.io/2017/04/15/mmap读写寄存器应注意不要越界/index.html">
 <meta property="og:site_name" content="gngshn的博客">
 <meta property="og:description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
-<meta property="og:updated_time" content="2017-09-01T03:20:34.139Z">
+<meta property="og:updated_time" content="2017-09-01T09:58:00.619Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mmap读写寄存器应注意不要越界">
 <meta name="twitter:description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
@@ -181,7 +181,7 @@
 <p>可以看到program 0比program 1多了两段地址空间</p>
 <ol>
 <li>heap空间</li>
-<li>a.txt的mmap空间<br>heap空间是引入标准io时, 内部使用引入的; a.txt的mmap空间是程序里面调用mmap产生的.<br>这里可以看见mmap访问后面的地址没有出错的原因了, 在mmap后面刚好有一段mmap空间<code>7f17bdc60000-7f17bdc62000 rw-p 00000000 00:00 0</code>, size为8K, 权限为读写, 当时我的读写都操作到这里了(具体这段空间是什么映射过来的我也不太明白).<br>因此在使用mmap操作的时候, 一定要注意操作内存不要过界, 程序很可能不会因为你的操作过界而发生segment fault, 但是却会和你期望的相差甚远.</li>
+<li>a.txt的mmap空间<br>heap空间是引入标准io时, 内部使用引入的; a.txt的mmap空间是程序里面调用mmap产生的.<br>这里可以看见mmap访问后面的地址没有出错的原因了, 在mmap后面刚好有一段mmap空间<code>7f17bdc60000-7f17bdc62000 rw-p 00000000 00:00 0</code>, size为8K, 权限为读写, 这段空间是匿名映射空间, 当时我的读写都操作到这里了.<br>因此在使用mmap操作的时候, 一定要注意操作内存不要过界, 程序很可能不会因为你的操作过界而发生segment fault, 但是却会和你期望的相差甚远.</li>
 </ol>
 
       
@@ -217,15 +217,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
         		</li>
       		
 		</ul>
@@ -421,10 +421,6 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mmap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">driver</a>
               </li>
              
@@ -434,6 +430,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">mmap</a>
               </li>
              
               <li class="article-tag-list-item">
