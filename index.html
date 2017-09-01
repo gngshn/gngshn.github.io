@@ -155,19 +155,73 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-libuv-源码分析-event-loop的初始化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-libuv-源码分析-2-event-loop的运转" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-event-loop的初始化/">libuv 源码分析 - event loop的初始化</a>
+      <a class="article-title" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">libuv 源码分析(2) - event loop的运转</a>
     </h1>
   
 
         
-        <a href="/2017/09/01/libuv-源码分析-event-loop的初始化/" class="archive-article-date">
+        <a href="/2017/09/01/libuv-源码分析-2-event-loop的运转/" class="archive-article-date">
+  	<time datetime="2017-09-01T03:36:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="libuv源码分析-2-event-loop的运转"><a href="#libuv源码分析-2-event-loop的运转" class="headerlink" title="libuv源码分析(2) - event loop的运转"></a>libuv源码分析(2) - event loop的运转</h1><p>by gngshn <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#103;&#x6e;&#x67;&#115;&#104;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;">&#103;&#x6e;&#x67;&#115;&#104;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;</a></p>
+<p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="external">libuv design overview</a><br>event loop的流程图如下<br>
+        
+          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-libuv-源码分析-1-event-loop的初始化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">libuv 源码分析(1) - event loop的初始化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/" class="archive-article-date">
   	<time datetime="2017-09-01T03:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
 </a>
         
@@ -175,11 +229,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="libuv源码分析-1-event-loop的初始化"><a href="#libuv源码分析-1-event-loop的初始化" class="headerlink" title="libuv源码分析(1) - event loop的初始化"></a>libuv源码分析(1) - event loop的初始化</h1><p>by gngshn <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#109;">&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#109;</a></p>
+        <h1 id="libuv源码分析-1-event-loop的初始化"><a href="#libuv源码分析-1-event-loop的初始化" class="headerlink" title="libuv源码分析(1) - event loop的初始化"></a>libuv源码分析(1) - event loop的初始化</h1><p>by gngshn <a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#103;&#x6e;&#103;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#103;&#x6e;&#103;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
 <p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
 <p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.<br>
         
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-event-loop的初始化/#more">more >></a>
+          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/#more">more >></a>
         
       
 
@@ -214,7 +268,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-event-loop的初始化/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">展开全文 >></a>
         </p>
       
 
