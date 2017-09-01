@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>gngshn的博客</title>
+  <title>libuv 源码分析(5) - 文件操作流程 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="linux程序员一枚">
-<meta name="keywords" content="linux, driver, python3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gngshn的博客">
-<meta property="og:url" content="http://gngshn.github.io/index.html">
+  <meta name="description" content="libuv 源码分析(5) - 文件操作流程by gngshn &amp;#x67;&amp;#x6e;&amp;#103;&amp;#x73;&amp;#104;&amp;#110;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.先来看一段libuv文件操作的代码1">
+<meta name="keywords" content="libuv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="libuv 源码分析(5) - 文件操作流程">
+<meta property="og:url" content="http://gngshn.github.io/2017/09/01/libuv-源码分析-5-文件操作流程/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="linux程序员一枚">
+<meta property="og:description" content="libuv 源码分析(5) - 文件操作流程by gngshn &amp;#x67;&amp;#x6e;&amp;#103;&amp;#x73;&amp;#104;&amp;#110;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.先来看一段libuv文件操作的代码1">
+<meta property="og:updated_time" content="2017-09-01T04:02:23.546Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gngshn的博客">
-<meta name="twitter:description" content="linux程序员一枚">
+<meta name="twitter:title" content="libuv 源码分析(5) - 文件操作流程">
+<meta name="twitter:description" content="libuv 源码分析(5) - 文件操作流程by gngshn &amp;#x67;&amp;#x6e;&amp;#103;&amp;#x73;&amp;#104;&amp;#110;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.先来看一段libuv文件操作的代码1">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -153,16 +154,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-libuv-源码分析-5-文件操作流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-libuv-源码分析-5-文件操作流程" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-5-文件操作流程/">libuv 源码分析(5) - 文件操作流程</a>
+    <h1 class="article-title" itemprop="name">
+      libuv 源码分析(5) - 文件操作流程
     </h1>
   
 
@@ -200,81 +199,26 @@
       
 
       
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-5-文件操作流程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-libuv-源码分析-4-libuv的工作队列-线程池" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/">libuv 源码分析(4) - libuv的工作队列(线程池)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:59:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="libuv-源码分析-libuv的工作队列-线程池"><a href="#libuv-源码分析-libuv的工作队列-线程池" class="headerlink" title="libuv 源码分析 - libuv的工作队列(线程池)"></a>libuv 源码分析 - libuv的工作队列(线程池)</h1><p>by gngshn <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#103;&#x6e;&#x67;&#x73;&#104;&#110;&#64;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#109;">&#103;&#x6e;&#x67;&#x73;&#104;&#110;&#64;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#109;</a></p>
-<h2 id="uv-work-queue"><a href="#uv-work-queue" class="headerlink" title="uv_work_queue"></a>uv_work_queue</h2><p>libuv就是通过<code>uv_work_queue</code>来实现其工作队列的, 这也是libuv实现文件异步操作的基础:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function">UV_EXTERN <span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></div><div class="line"><span class="function"><span class="params">                            <span class="keyword">uv_work_t</span>* req,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_work_cb work_cb,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_after_work_cb after_work_cb)</span></span>;</div></pre></td></tr></table></figure></p>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/#more">more >></a>
-        
-      
-
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -305,18 +249,74 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/09/01/libuv-源码分析-5-文件操作流程/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
 
-
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">libuv 源码分析(4) - libuv的工作队列(线程池)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
 
@@ -324,567 +324,10 @@
 
 
   
-    <article id="post-libuv-源码分析-3-poll过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-3-poll过程/">libuv 源码阅读(3) - poll过程</a>
-    </h1>
+    <div class="duoshuo"></div>
   
 
-        
-        <a href="/2017/09/01/libuv-源码分析-3-poll过程/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:54:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="libuv-源码分析-3-poll过程"><a href="#libuv-源码分析-3-poll过程" class="headerlink" title="libuv 源码分析(3) - poll过程"></a>libuv 源码分析(3) - poll过程</h1><p>by gngshn <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x67;&#x6e;&#x67;&#x73;&#104;&#110;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x67;&#x6e;&#x67;&#x73;&#104;&#110;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;</a></p>
-<p>上一篇, 我们将到libuv的event loop过程, 其中留了个悬念, 下面我们来解除这个悬念, 直接上函数, 这个函数特别长, 我们依旧直接在函数里面写注释把~<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-3-poll过程/#more">more >></a>
-        
-      
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-3-poll过程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-libuv-源码分析-2-event-loop的运转" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">libuv 源码分析(2) - event loop的运转</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-2-event-loop的运转/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:36:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="libuv-源码分析-2-event-loop的运转"><a href="#libuv-源码分析-2-event-loop的运转" class="headerlink" title="libuv 源码分析(2) - event loop的运转"></a>libuv 源码分析(2) - event loop的运转</h1><p>by gngshn <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></p>
-<p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="external">libuv design overview</a><br>event loop的流程图如下<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-libuv-源码分析-1-event-loop的初始化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">libuv 源码分析(1) - event loop的初始化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="libuv-源码分析-1-event-loop的初始化"><a href="#libuv-源码分析-1-event-loop的初始化" class="headerlink" title="libuv 源码分析(1) - event loop的初始化"></a>libuv 源码分析(1) - event loop的初始化</h1><p>by gngshn <a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#103;&#110;&#x67;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#103;&#110;&#x67;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a></p>
-<p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
-<p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-正式开始书写自己的博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前一直不喜欢类似csdn一类的网站来写博客, 自己搭wordpress有太麻烦, 现在使用github page正式开启自己的博客之旅.<br>这里主要会记录一些自己遇到的坑和一些学习的见解, 希望自己能坚持下去.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/正式开始书写自己的博客/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-mmap读写寄存器应注意不要越界" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/mmap读写寄存器应注意不要越界/">mmap读写寄存器应注意不要越界</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/mmap读写寄存器应注意不要越界/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:56:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:<br>我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有问题. 后来无意发现了mmap指定的size不对, 改好了就可以了.<br>那么这里有一个问题, 为什么访问4K-8K的空间没有发生segment fault呢?<br>
-        
-          <a class="article-more-a" href="/2017/04/15/mmap读写寄存器应注意不要越界/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/mmap读写寄存器应注意不要越界/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-kernel中的IS-ENABLED" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/kernel中的IS-ENABLED/">kernel中的IS_ENABLED</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/kernel中的IS-ENABLED/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:55:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在kernel的代码中, 有时候会看见<code>IS_ENABLED(CONFIG_XXXX)</code>来测试某个Kconfig选项是否开启(即选中为<code>y</code>或者<code>m</code>). 如<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (IS_ENABLED(CONFIG_TIME_LOW_RES) &amp;&amp; timer-&gt;is_rel)</div><div class="line">	rem -= hrtimer_resolution;</div></pre></td></tr></table></figure></p>
-<p>这里当TIME_LOW_RES这个Kconfig选项配置为<code>y</code>或<code>m</code>, 并且<code>timer-&gt;is_rel</code>不为0时调用<code>rem -= hrtimer_resolution</code>.<br>那么这个是怎样实现的呢?<br>
-        
-          <a class="article-more-a" href="/2017/04/15/kernel中的IS-ENABLED/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/kernel中的IS-ENABLED/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-使用docker来构建嵌入式开发环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/使用docker来构建嵌入式开发环境/">使用docker来构建嵌入式开发环境</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/使用docker来构建嵌入式开发环境/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:54:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.<br>比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora 25上编译SDK.<br>
-        
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-dev-mem的mmap分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/dev-mem的mmap分析/">dev_mem的mmap分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/dev-mem的mmap分析/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:52:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>当用户空间需要实现驱动程序时, 需要操作底层的寄存器. 使用<code>/dev/mem</code>映射io内存空间就是一种常用的方式. <code>/dev/mem</code> 一般都是使用其 <code>mmap</code> 函数. 将底层的寄存器映射到用户空间地址. 下面对 <code>/dev/mem</code>的<code>mmap</code>函数进行一下简单的分析.<br><code>/dev/mem</code>设备文件是由<code>drivers/char/mem.c</code>驱动创建. 该设备文件的<code>file_operations</code>为<br>
-        
-          <a class="article-more-a" href="/2017/04/15/dev-mem的mmap分析/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/dev-mem的mmap分析/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-  
 
 
           </div>
@@ -906,8 +349,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
