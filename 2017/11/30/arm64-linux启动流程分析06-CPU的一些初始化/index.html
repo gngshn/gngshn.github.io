@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>Tag: 随笔 | gngshn的博客</title>
+  <title>arm64_linux启动流程分析06_CPU的一些初始化 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="linux程序员一枚">
-<meta name="keywords" content="linux, driver, python3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gngshn的博客">
-<meta property="og:url" content="http://gngshn.github.io/tags/随笔/index.html">
+  <meta name="description" content="接下来进入__cpu_setup函数">
+<meta name="keywords" content="linux,arm64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析06_CPU的一些初始化">
+<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="linux程序员一枚">
+<meta property="og:description" content="接下来进入__cpu_setup函数">
+<meta property="og:updated_time" content="2017-11-30T05:00:21.536Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gngshn的博客">
-<meta name="twitter:description" content="linux程序员一枚">
+<meta name="twitter:title" content="arm64_linux启动流程分析06_CPU的一些初始化">
+<meta name="twitter:description" content="接下来进入__cpu_setup函数">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -153,60 +154,176 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-arm64-linux启动流程分析06-CPU的一些初始化" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
+    <h1 class="article-title" itemprop="name">
+      arm64_linux启动流程分析06_CPU的一些初始化
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来进入<code>__cpu_setup</code>函数</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line">ENTRY(__cpu_setup)</div><div class="line">	/* 清空当前CORE所有的tlb, vm + all + el1, 这条指令需要对non-sharable区域加内存屏障 */</div><div class="line">	tlbi	vmalle1				// Invalidate local TLB</div><div class="line">	dsb	nsh</div><div class="line"></div><div class="line">	/* 开启CPU的FP/SIMD, debug功能, 关闭PMU等 */</div><div class="line">	mov	x0, #3 &lt;&lt; 20</div><div class="line">	msr	cpacr_el1, x0			// Enable FP/ASIMD</div><div class="line">	mov	x0, #1 &lt;&lt; 12			// Reset mdscr_el1 and disable</div><div class="line">	msr	mdscr_el1, x0			// access to the DCC from EL0</div><div class="line">	isb					// Unmask debug exceptions now,</div><div class="line">	enable_dbg				// since this is per-cpu</div><div class="line">	reset_pmuserenr_el0 x0			// Disable PMU access from EL0</div><div class="line">	/*</div><div class="line">	 * 上面内容我们说到了, 页表entry表明内存是普通内存, 就是结合这里的初始化来指明的,</div><div class="line">	 * PMD_ATTRINDX(MT_NORMAL)是4, 这其实是一个index, 指向MAIR寄存器的[4*8+7:4*8],</div><div class="line">	 * MAIR寄存器一共有8组, KERNEL用了6组, 每组有8bit, 每个bit都有相应的含义.</div><div class="line">	 * 具体参考手册, 这里就不细说了, 点到为止</div><div class="line">	 */</div><div class="line">	/*</div><div class="line">	 * Memory region attributes for LPAE:</div><div class="line">	 *</div><div class="line">	 *   n = AttrIndx[2:0]</div><div class="line">	 *			n	MAIR</div><div class="line">	 *   DEVICE_nGnRnE	000	00000000</div><div class="line">	 *   DEVICE_nGnRE	001	00000100</div><div class="line">	 *   DEVICE_GRE		010	00001100</div><div class="line">	 *   NORMAL_NC		011	01000100</div><div class="line">	 *   NORMAL		100	11111111</div><div class="line">	 *   NORMAL_WT		101	10111011</div><div class="line">	 */</div><div class="line">	ldr	x5, =MAIR(0x00, MT_DEVICE_nGnRnE) | \</div><div class="line">		     MAIR(0x04, MT_DEVICE_nGnRE) | \</div><div class="line">		     MAIR(0x0c, MT_DEVICE_GRE) | \</div><div class="line">		     MAIR(0x44, MT_NORMAL_NC) | \</div><div class="line">		     MAIR(0xff, MT_NORMAL) | \</div><div class="line">		     MAIR(0xbb, MT_NORMAL_WT)</div><div class="line">	msr	mair_el1, x5</div><div class="line">	/*</div><div class="line">	 * Prepare SCTLR</div><div class="line">	 */</div><div class="line">	/* 从这里开始注意x0寄存器, 保存了后面开启MMU时需要写入sctlr_el1的值 */</div><div class="line">	adr	x5, crval</div><div class="line">	ldp	w5, w6, [x5]</div><div class="line">	mrs	x0, sctlr_el1</div><div class="line">	bic	x0, x0, x5			// clear bits</div><div class="line">	orr	x0, x0, x6			// set bits</div><div class="line">	/*</div><div class="line">	 * Set/prepare TCR and TTBR. We use 512GB (39-bit) address range for</div><div class="line">	 * both user and kernel.</div><div class="line">	 */</div><div class="line">	ldr	x10, =TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \</div><div class="line">			TCR_TG_FLAGS | TCR_ASID16 | TCR_TBI0</div><div class="line">	tcr_set_idmap_t0sz	x10, x9</div><div class="line"></div><div class="line">	/*</div><div class="line">	 * Read the PARange bits from ID_AA64MMFR0_EL1 and set the IPS bits in</div><div class="line">	 * TCR_EL1.</div><div class="line">	 */</div><div class="line">	mrs	x9, ID_AA64MMFR0_EL1</div><div class="line">	bfi	x10, x9, #32, #3</div><div class="line">#ifdef CONFIG_ARM64_HW_AFDBM</div><div class="line">	/*</div><div class="line">	 * Hardware update of the Access and Dirty bits.</div><div class="line">	 */</div><div class="line">	mrs	x9, ID_AA64MMFR1_EL1</div><div class="line">	and	x9, x9, #0xf</div><div class="line">	cbz	x9, 2f</div><div class="line">	cmp	x9, #2</div><div class="line">	b.lt	1f</div><div class="line">	orr	x10, x10, #TCR_HD		// hardware Dirty flag update</div><div class="line">1:	orr	x10, x10, #TCR_HA		// hardware Access flag update</div><div class="line">2:</div><div class="line">#endif	/* CONFIG_ARM64_HW_AFDBM */</div><div class="line">	msr	tcr_el1, x10</div><div class="line">	ret					// return to head.S</div><div class="line">ENDPROC(__cpu_setup)</div></pre></td></tr></table></figure>
+<p>这段汇编代码初始化了CPU的一些寄存器, 如tcr_el1(translation control register)配置虚拟地址的大小, PAGE大小, ASID, share属性, TAG等, 并准备了开启MMU时需要写入sctlr_el1的值.</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          arm64_linux启动流程分析07_开启MMU切换到虚拟地址
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/11/30/arm64-linux启动流程分析05-配置内核启动的临时页表/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">arm64_linux启动流程分析05_配置内核启动的临时页表</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-    
+
 
 
           </div>
@@ -229,9 +346,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",

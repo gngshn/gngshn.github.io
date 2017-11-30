@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>Tag: 随笔 | gngshn的博客</title>
+  <title>arm64_linux启动流程分析03_设定当前core的启动状态 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="linux程序员一枚">
-<meta name="keywords" content="linux, driver, python3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gngshn的博客">
-<meta property="og:url" content="http://gngshn.github.io/tags/随笔/index.html">
+  <meta name="description" content="接下来看el2_setup 123456789101112131415ENTRY(el2_setup)	msr	SPsel, #1			// We want to use SP_EL&amp;#123;1,2&amp;#125;	mrs	x0, CurrentEL	cmp	x0, #CurrentEL_EL2	b.eq	1f	mrs	x0, sctlr_el1CPU_BE(	orr	x0, x0, #(3 &amp;lt">
+<meta name="keywords" content="linux,arm64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析03_设定当前core的启动状态">
+<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="linux程序员一枚">
+<meta property="og:description" content="接下来看el2_setup 123456789101112131415ENTRY(el2_setup)	msr	SPsel, #1			// We want to use SP_EL&amp;#123;1,2&amp;#125;	mrs	x0, CurrentEL	cmp	x0, #CurrentEL_EL2	b.eq	1f	mrs	x0, sctlr_el1CPU_BE(	orr	x0, x0, #(3 &amp;lt">
+<meta property="og:updated_time" content="2017-11-30T04:59:47.160Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gngshn的博客">
-<meta name="twitter:description" content="linux程序员一枚">
+<meta name="twitter:title" content="arm64_linux启动流程分析03_设定当前core的启动状态">
+<meta name="twitter:description" content="接下来看el2_setup 123456789101112131415ENTRY(el2_setup)	msr	SPsel, #1			// We want to use SP_EL&amp;#123;1,2&amp;#125;	mrs	x0, CurrentEL	cmp	x0, #CurrentEL_EL2	b.eq	1f	mrs	x0, sctlr_el1CPU_BE(	orr	x0, x0, #(3 &amp;lt">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -153,60 +154,182 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-arm64-linux启动流程分析03-设定当前core的启动状态" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
+    <h1 class="article-title" itemprop="name">
+      arm64_linux启动流程分析03_设定当前core的启动状态
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来看<code>el2_setup</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">ENTRY(el2_setup)</div><div class="line">	msr	SPsel, #1			// We want to use SP_EL&#123;1,2&#125;</div><div class="line">	mrs	x0, CurrentEL</div><div class="line">	cmp	x0, #CurrentEL_EL2</div><div class="line">	b.eq	1f</div><div class="line">	mrs	x0, sctlr_el1</div><div class="line">CPU_BE(	orr	x0, x0, #(3 &lt;&lt; 24)	)	// Set the EE and E0E bits for EL1</div><div class="line">CPU_LE(	bic	x0, x0, #(3 &lt;&lt; 24)	)	// Clear the EE and E0E bits for EL1</div><div class="line">	msr	sctlr_el1, x0</div><div class="line">	mov	w0, #BOOT_CPU_MODE_EL1		// This cpu booted in EL1</div><div class="line">	isb</div><div class="line">	ret</div><div class="line"></div><div class="line">1:	mrs	x0, sctlr_el2</div><div class="line">......省略......</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>判断当前core的EL, 如果是EL1, 就设定使用little endian, <code>CPU_BE</code>和<code>CPU_LE</code>只有一条会编译进code. 之后返回<code>BOOT_CPU_MODE_EL1</code>, 如果EL2, 会初始化虚拟化相关的东西, 比较复杂, 先搁着.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">adrp	x23, __PHYS_OFFSET</div><div class="line">and	x23, x23, MIN_KIMG_ALIGN - 1	// KASLR offset, defaults to 0</div></pre></td></tr></table></figure>
+<p>这段code跟kaslr有关, 我们下篇文章来着重讲这个. 先接着往下看<code>set_cpu_boot_mode_flag</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">set_cpu_boot_mode_flag:</div><div class="line">	adr_l	x1, __boot_cpu_mode</div><div class="line">	cmp	w0, #BOOT_CPU_MODE_EL2</div><div class="line">	b.ne	1f</div><div class="line">	add	x1, x1, #4</div><div class="line">1:	str	w0, [x1]			// This CPU has booted in EL1</div><div class="line">	dmb	sy</div><div class="line">	dc	ivac, x1			// Invalidate potentially stale cache line</div><div class="line">	ret</div><div class="line">ENDPROC(set_cpu_boot_mode_flag)</div></pre></td></tr></table></figure>
+<p>在<code>__boot_cpu_mode</code>标签下保存了两个值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ENTRY(__boot_cpu_mode)</div><div class="line">	.long	BOOT_CPU_MODE_EL2</div><div class="line">	.long	BOOT_CPU_MODE_EL1</div></pre></td></tr></table></figure>
+<p>这段code的作用就是把保存的这两个值修改为一致, 且为当前CORE的启动EL, 其他CORE启动时也会运行这段code, 这样如果后面的CORE启动到了不同的EL就又会把这两个值修改为不一致, 从而可以判断出CPU的启动状态时不对的.</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          arm64_linux启动流程分析04_kernel_address_space_layout_randomization
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">arm64_linux启动流程分析02_保存启动信息</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-    
+
 
 
           </div>
@@ -229,9 +352,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",

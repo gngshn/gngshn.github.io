@@ -155,6 +155,646 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行/">arm64_linux启动流程分析08_正式跳入内核空间虚拟地址段运行</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>相信一些细心的读者有注意到, 到目前位置, 内核仍然在低地址段运行, 虽然我们已经启动了MMU, 但是仍然运行在等于物理地址的虚拟地址上, 下面我们就要正式的切换到内核态的高地址空间来运行.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ldr	x8, =__primary_switched</div><div class="line">adrp	x0, __PHYS_OFFSET</div><div class="line">blr	x8</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析07-开启MMU切换到虚拟地址" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/">arm64_linux启动流程分析07_开启MMU切换到虚拟地址</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇内容我们来讲述<code>__primary_switch</code></p>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析06-CPU的一些初始化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/">arm64_linux启动流程分析06_CPU的一些初始化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来进入<code>__cpu_setup</code>函数</p>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析05-配置内核启动的临时页表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析05-配置内核启动的临时页表/">arm64_linux启动流程分析05_配置内核启动的临时页表</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析05-配置内核启动的临时页表/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇内容讲讲页表的配置, 为了kernel运行速度加快, 我们需要启动cache, 启动cache需要先启动MMU让CPU运行到虚拟地址上, 那么我们就需要启动一个能覆盖KERNEL内存区域的页表.</p>
+<p>本篇内容假设在您对MMU有一定的了解的基础上来讲述的.</p>
+<p>我们假设使用4K页来管理内存, 同时虚拟地址使用48位地址</p>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析05-配置内核启动的临时页表/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析05-配置内核启动的临时页表/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析04-kernel-address-space-layout-randomization" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/">arm64_linux启动流程分析04_kernel_address_space_layout_randomization</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇内容主要是说一下KASLR</p>
+<p>KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">+---------------+-------+-------------+----------------------</div><div class="line">|               |       |             |</div><div class="line">| 2M align resv | KASLR | TEXT_OFFSET | KERNEL IMAGE</div><div class="line">|               |       |             |</div><div class="line">+---------------+-------+-------------+----------------------</div><div class="line">|                       |             |</div><div class="line">|                       |             +----内核在DDR中的位置.</div><div class="line">|                       +----------------- ARM64规定的KERNEL运行前必须放在 2M对齐地址+TEXT_OFFSET 的地方</div><div class="line">|                                          这里是经过KASLR技术relocate之后的位置.</div><div class="line">+----------------------------------------- DDR起始地址.</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析03-设定当前core的启动状态" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/">arm64_linux启动流程分析03_设定当前core的启动状态</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来看<code>el2_setup</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">ENTRY(el2_setup)</div><div class="line">	msr	SPsel, #1			// We want to use SP_EL&#123;1,2&#125;</div><div class="line">	mrs	x0, CurrentEL</div><div class="line">	cmp	x0, #CurrentEL_EL2</div><div class="line">	b.eq	1f</div><div class="line">	mrs	x0, sctlr_el1</div><div class="line">CPU_BE(	orr	x0, x0, #(3 &lt;&lt; 24)	)	// Set the EE and E0E bits for EL1</div><div class="line">CPU_LE(	bic	x0, x0, #(3 &lt;&lt; 24)	)	// Clear the EE and E0E bits for EL1</div><div class="line">	msr	sctlr_el1, x0</div><div class="line">	mov	w0, #BOOT_CPU_MODE_EL1		// This cpu booted in EL1</div><div class="line">	isb</div><div class="line">	ret</div><div class="line"></div><div class="line">1:	mrs	x0, sctlr_el2</div><div class="line">......省略......</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析02-保存启动信息" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/">arm64_linux启动流程分析02_保存启动信息</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>解上节, 我们先来看看<code>bl    preserve_boot_args</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">preserve_boot_args:</div><div class="line">	mov	x21, x0				// x21=FDT</div><div class="line"></div><div class="line">	adr_l	x0, boot_args			// record the contents of</div><div class="line">	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry</div><div class="line">	stp	x2, x3, [x0, #16]</div><div class="line"></div><div class="line">	dmb	sy				// needed before dc ivac with</div><div class="line">						// MMU off</div><div class="line"></div><div class="line">	mov	x1, #0x20			// 4 x 8 bytes</div><div class="line">	b	__inval_dcache_area		// tail call</div><div class="line">ENDPROC(preserve_boot_args)</div></pre></td></tr></table></figure></p>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-arm64-linux启动流程分析01-内核的入口" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/">arm64_linux启动流程分析01_内核的入口</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/" class="archive-article-date">
+  	<time datetime="2017-11-30T03:54:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析</p>
+<p>首先看链接文件如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">ENTRY(_text)</div><div class="line">SECTIONS</div><div class="line">&#123;</div><div class="line">	.....省略部分无关内容....</div><div class="line"></div><div class="line">	. = KIMAGE_VADDR + TEXT_OFFSET;</div><div class="line"></div><div class="line">	.head.text : &#123;</div><div class="line">		_text = .;</div><div class="line">		HEAD_TEXT</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-libuv-源码分析-5-文件操作流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -175,7 +815,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#103;&#110;&#103;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;">&#103;&#110;&#103;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;</a></p>
+        <p>by gngshn <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;">&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#64;&#x67;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;</a></p>
 <p>上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.<br>先来看一段libuv文件操作的代码<br>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-5-文件操作流程/#more">more >></a>
@@ -251,7 +891,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="&#x6d;&#97;&#105;&#108;&#116;&#111;&#58;&#103;&#x6e;&#103;&#x73;&#x68;&#110;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#46;&#99;&#x6f;&#109;">&#103;&#x6e;&#103;&#x73;&#x68;&#110;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#46;&#99;&#x6f;&#109;</a></p>
+        <p>by gngshn <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#x67;&#x6e;&#103;&#x73;&#x68;&#110;&#64;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#x67;&#x6e;&#103;&#x73;&#x68;&#110;&#64;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></p>
 <p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function">UV_EXTERN <span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></div><div class="line"><span class="function"><span class="params">                            <span class="keyword">uv_work_t</span>* req,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_work_cb work_cb,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_after_work_cb after_work_cb)</span></span>;</div></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/#more">more >></a>
@@ -307,610 +947,10 @@
 
 
   
-    <article id="post-libuv-源码分析-3-poll过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-3-poll过程/">libuv 源码阅读(3) - poll过程</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-3-poll过程/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:54:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>by gngshn <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#103;&#x6e;&#103;&#115;&#x68;&#x6e;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#103;&#x6e;&#103;&#115;&#x68;&#x6e;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a></p>
-<p>上一篇, 我们将到libuv的event loop过程, 其中留了个悬念, 下面我们来解除这个悬念, 直接上函数, 这个函数特别长, 我们依旧直接在函数里面写注释把~<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-3-poll过程/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-3-poll过程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-libuv-源码分析-2-event-loop的运转" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">libuv 源码分析(2) - event loop的运转</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-2-event-loop的运转/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:36:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>by gngshn <a href="&#109;&#97;&#105;&#x6c;&#x74;&#111;&#58;&#x67;&#110;&#103;&#x73;&#104;&#x6e;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#x67;&#110;&#103;&#x73;&#104;&#x6e;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></p>
-<p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="external">libuv design overview</a><br>event loop的流程图如下<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-libuv-源码分析-1-event-loop的初始化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">libuv 源码分析(1) - event loop的初始化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>by gngshn <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#x67;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;">&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#x67;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;</a></p>
-<p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
-<p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.<br>
-        
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/01/libuv-源码分析-1-event-loop的初始化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-正式开始书写自己的博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前一直不喜欢类似csdn一类的网站来写博客, 自己搭wordpress有太麻烦, 现在使用github page正式开启自己的博客之旅.<br>这里主要会记录一些自己遇到的坑和一些学习的见解, 希望自己能坚持下去.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/正式开始书写自己的博客/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-mmap读写寄存器应注意不要越界" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/mmap读写寄存器应注意不要越界/">mmap读写寄存器应注意不要越界</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/mmap读写寄存器应注意不要越界/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:56:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:<br>我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有问题. 后来无意发现了mmap指定的size不对, 改好了就可以了.<br>那么这里有一个问题, 为什么访问4K-8K的空间没有发生segment fault呢?<br>
-        
-          <a class="article-more-a" href="/2017/04/15/mmap读写寄存器应注意不要越界/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/mmap读写寄存器应注意不要越界/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-kernel中的IS-ENABLED" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/kernel中的IS-ENABLED/">kernel中的IS_ENABLED</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/kernel中的IS-ENABLED/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:55:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在kernel的代码中, 有时候会看见<code>IS_ENABLED(CONFIG_XXXX)</code>来测试某个Kconfig选项是否开启(即选中为<code>y</code>或者<code>m</code>). 如<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (IS_ENABLED(CONFIG_TIME_LOW_RES) &amp;&amp; timer-&gt;is_rel)</div><div class="line">	rem -= hrtimer_resolution;</div></pre></td></tr></table></figure></p>
-<p>这里当TIME_LOW_RES这个Kconfig选项配置为<code>y</code>或<code>m</code>, 并且<code>timer-&gt;is_rel</code>不为0时调用<code>rem -= hrtimer_resolution</code>.<br>那么这个是怎样实现的呢?<br>
-        
-          <a class="article-more-a" href="/2017/04/15/kernel中的IS-ENABLED/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/kernel中的IS-ENABLED/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-使用docker来构建嵌入式开发环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/使用docker来构建嵌入式开发环境/">使用docker来构建嵌入式开发环境</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/使用docker来构建嵌入式开发环境/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:54:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.<br>比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora 25上编译SDK.<br>
-        
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
-    <article id="post-dev-mem的mmap分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/dev-mem的mmap分析/">dev_mem的mmap分析</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/dev-mem的mmap分析/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:52:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>当用户空间需要实现驱动程序时, 需要操作底层的寄存器. 使用<code>/dev/mem</code>映射io内存空间就是一种常用的方式. <code>/dev/mem</code> 一般都是使用其 <code>mmap</code> 函数. 将底层的寄存器映射到用户空间地址. 下面对 <code>/dev/mem</code>的<code>mmap</code>函数进行一下简单的分析.<br><code>/dev/mem</code>设备文件是由<code>drivers/char/mem.c</code>驱动创建. 该设备文件的<code>file_operations</code>为<br>
-        
-          <a class="article-more-a" href="/2017/04/15/dev-mem的mmap分析/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/dev-mem的mmap分析/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -1004,11 +1044,15 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color2">driver</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">libuv</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1016,11 +1060,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">driver</a>
+                <a href="javascript:void(0)" class="js-tag color1">libuv</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">arm64</a>
               </li>
             
             <div class="clearfix"></div>

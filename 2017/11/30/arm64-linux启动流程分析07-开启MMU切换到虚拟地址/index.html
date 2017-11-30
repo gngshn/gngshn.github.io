@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>Tag: 随笔 | gngshn的博客</title>
+  <title>arm64_linux启动流程分析07_开启MMU切换到虚拟地址 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="linux程序员一枚">
-<meta name="keywords" content="linux, driver, python3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gngshn的博客">
-<meta property="og:url" content="http://gngshn.github.io/tags/随笔/index.html">
+  <meta name="description" content="这篇内容我们来讲述__primary_switch">
+<meta name="keywords" content="linux,arm64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析07_开启MMU切换到虚拟地址">
+<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="linux程序员一枚">
+<meta property="og:description" content="这篇内容我们来讲述__primary_switch">
+<meta property="og:updated_time" content="2017-11-30T05:00:32.427Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gngshn的博客">
-<meta name="twitter:description" content="linux程序员一枚">
+<meta name="twitter:title" content="arm64_linux启动流程分析07_开启MMU切换到虚拟地址">
+<meta name="twitter:description" content="这篇内容我们来讲述__primary_switch">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -153,60 +154,187 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-arm64-linux启动流程分析07-开启MMU切换到虚拟地址" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
+    <h1 class="article-title" itemprop="name">
+      arm64_linux启动流程分析07_开启MMU切换到虚拟地址
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇内容我们来讲述<code>__primary_switch</code></p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">__primary_switch:</div><div class="line">#ifdef CONFIG_RANDOMIZE_BASE</div><div class="line">	/*</div><div class="line">	 * 保存x0(开启MMU时需要写入sctlr_el1的值, 保存sctlr_el1的当前值</div><div class="line">	 * 这两条汇编的作用是为了在开启MMU, 内核发现运行地址和链接地址是一致的时候再次关闭</div><div class="line">	 * MMU, 然后通过获取设备树的`kaslr-seed`来将内核移动到一个随机地址运行, 当然如果</div><div class="line">	 * 设备树没有`kaslr-seed`或者command line指定了`nokaslr`则就不启动kaslr(也就</div><div class="line">	 * 不用返回重启MMU, 重新建立页表了</div><div class="line">	 */</div><div class="line">	mov	x19, x0				// preserve new SCTLR_EL1 value</div><div class="line">	mrs	x20, sctlr_el1			// preserve old SCTLR_EL1 value</div><div class="line">#endif</div><div class="line">	/* 开启MMU */</div><div class="line">	bl	__enable_mmu</div><div class="line">#ifdef CONFIG_RELOCATABLE</div><div class="line">	/* 如果因为kaslr的关系, 目前内核的运行地址和链接地址是不同的, 前面的code能正常运行</div><div class="line">	 * 是因为所有的指令和数据都是PIC(代码位置无关)的, 后面的code是不能保证的, 所以需要</div><div class="line">	 * 用内核的`.rela`段来修复这个问题</div><div class="line">	 */</div><div class="line">	bl	__relocate_kernel</div><div class="line">#ifdef CONFIG_RANDOMIZE_BASE</div><div class="line">	/* 在这里准备swapper的初始化环境, 后面正式跳入C code进行内核初始化, 这个下篇再说 */</div><div class="line">	ldr	x8, =__primary_switched</div><div class="line">	adrp	x0, __PHYS_OFFSET</div><div class="line">	blr	x8</div><div class="line"></div><div class="line">	/*</div><div class="line">	 * If we return here, we have a KASLR displacement in x23 which we need</div><div class="line">	 * to take into account by discarding the current kernel mapping and</div><div class="line">	 * creating a new one.</div><div class="line">	 */</div><div class="line">	/*</div><div class="line">	 * 如果返回到这里表示使用设备树的`kaslr-seed`来启动kaslr, 这里内核已经被重新copy</div><div class="line">	 * 到(0xffff_0000_0000_0000 + 128M(module) + kaslr-seed + TEXT_OFFSET的</div><div class="line">	 * 位置, 因此内核的页表, 符号都需要重新进行设定. 所以下面的code关闭MMU, 重建页表,</div><div class="line">	 * 修复内核符号, 再次跳入__primary_switched</div><div class="line">	 */</div><div class="line">	msr	sctlr_el1, x20			// disable the MMU</div><div class="line">	isb</div><div class="line">	bl	__create_page_tables		// recreate kernel mapping</div><div class="line"></div><div class="line">	tlbi	vmalle1				// Remove any stale TLB entries</div><div class="line">	dsb	nsh</div><div class="line"></div><div class="line">	msr	sctlr_el1, x19			// re-enable the MMU</div><div class="line">	isb</div><div class="line">	ic	iallu				// flush instructions fetched</div><div class="line">	dsb	nsh				// via old mapping</div><div class="line">	isb</div><div class="line"></div><div class="line">	bl	__relocate_kernel</div><div class="line">#endif</div><div class="line">#endif</div><div class="line">	ldr	x8, =__primary_switched</div><div class="line">	adrp	x0, __PHYS_OFFSET</div><div class="line">	br	x8</div><div class="line">ENDPROC(__primary_switch)</div></pre></td></tr></table></figure>
+<p>通过上面的注释, 我们可以大致了解到code的行为和, 我们我们来关注一下行为的细节.</p>
+<p>首先是<code>__enable_mmu</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">ENTRY(__enable_mmu)</div><div class="line">	/*</div><div class="line">	 * 下面4条代码判断硬件是否实际支持4K页表映射, 如果不支持, 就跳入</div><div class="line">	 * `__no_granule_support`, 表明启动失败, CPU调用wfe, wfi进入idle状态</div><div class="line">	 */</div><div class="line">	mrs	x1, ID_AA64MMFR0_EL1</div><div class="line">	ubfx	x2, x1, #ID_AA64MMFR0_TGRAN_SHIFT, 4</div><div class="line">	cmp	x2, #ID_AA64MMFR0_TGRAN_SUPPORTED</div><div class="line">	b.ne	__no_granule_support</div><div class="line">	/* 在`__early_cpu_boot_status`存入0表明CPU状态正常 */</div><div class="line">	update_early_cpu_boot_status 0, x1, x2</div><div class="line">	/*</div><div class="line">	 * 设定TTBR0, TTBR1, TTBR0用于虚拟地址MSB都为0时(在这里对应与物理地址相</div><div class="line">	 * 等的虚拟地址)的页表映射, TTBR1用于虚拟地址MSB都为1时(在这里对应与物理地</div><div class="line">	 * 址相等的虚拟地址)的页表映射. 在正常状态下TTBR0用于用户空间页表映射,</div><div class="line">	 * TTBR1用于内核空间页表映射, 分成两个可以在切换进程时, 内核页表不用做切换</div><div class="line">	 */</div><div class="line">	adrp	x1, idmap_pg_dir</div><div class="line">	adrp	x2, swapper_pg_dir</div><div class="line">	msr	ttbr0_el1, x1			// load TTBR0</div><div class="line">	msr	ttbr1_el1, x2			// load TTBR1</div><div class="line">	/*</div><div class="line">	 * 两条isb内存屏障保证中间的指令执行的顺序, isb还需flush cpu的pipe line,</div><div class="line">	 * 这样CPU就会在开启MMU之后重新取指令, 可以保证去到的指令的正确性.</div><div class="line">	 */</div><div class="line">	isb</div><div class="line">	msr	sctlr_el1, x0</div><div class="line">	isb</div><div class="line">	/*</div><div class="line">	 * Invalidate the local I-cache so that any instructions fetched</div><div class="line">	 * speculatively from the PoC are discarded, since they may have</div><div class="line">	 * been dynamically patched at the PoU.</div><div class="line">	 */</div><div class="line">	/*</div><div class="line">	 * iallu = invalidate + all + PoU</div><div class="line">	 * 清空左右的icache到PoU保证cpu core的各个模块看到的内容的一致性, dsb nsh</div><div class="line">	 * 保证上面的动作在CORE本地(non-sharable)完成. 最后清空CPU pipeline, 返回</div><div class="line">	 */</div><div class="line">	ic	iallu</div><div class="line">	dsb	nsh</div><div class="line">	isb</div><div class="line">	ret</div><div class="line">ENDPROC(__enable_mmu)</div></pre></td></tr></table></figure>
+<p>然后是<code>___relocate_kernel</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">__relocate_kernel:</div><div class="line">	/*</div><div class="line">	 * Iterate over each entry in the relocation table, and apply the</div><div class="line">	 * relocations in place.</div><div class="line">	 */</div><div class="line">	ldr	w9, =__rela_offset		// offset to reloc table</div><div class="line">	ldr	w10, =__rela_size		// size of reloc table</div><div class="line"></div><div class="line">	mov_q	x11, KIMAGE_VADDR		// default virtual offset</div><div class="line">	add	x11, x11, x23			// actual virtual offset</div><div class="line">	add	x9, x9, x11			// __va(.rela)</div><div class="line">	add	x10, x9, x10			// __va(.rela) + sizeof(.rela)</div><div class="line"></div><div class="line">0:	cmp	x9, x10</div><div class="line">	b.hs	1f</div><div class="line">	ldp	x11, x12, [x9], #24</div><div class="line">	ldr	x13, [x9, #-8]</div><div class="line">	cmp	w12, #R_AARCH64_RELATIVE</div><div class="line">	b.ne	0b</div><div class="line">	add	x13, x13, x23			// relocate</div><div class="line">	str	x13, [x11, x23]</div><div class="line">	b	0b</div><div class="line">1:	ret</div><div class="line">ENDPROC(__relocate_kernel)</div></pre></td></tr></table></figure>
+<p><code>__rela_offset</code>定义在链接文件中, 如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.rela : ALIGN(8) &#123;</div><div class="line">		*(.rela .rela*)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	__rela_offset	= ABSOLUTE(ADDR(.rela) - KIMAGE_VADDR);</div><div class="line">	__rela_size	= SIZEOF(.rela);</div></pre></td></tr></table></figure>
+<p>可以看出<code>__rela_offset</code>是<code>.rela</code>段相对KERNEL起始地址的偏移. <code>__rela_size</code>是<code>.rela</code>段的偏移.<br>通过对汇编代码的阅读, 我们大致可以看出<code>.rela</code>段的内容如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">|     32 bit     |      32 bit     |      32 bit     |     ...</div><div class="line">+----------------+-----------------------------------+-----------------</div><div class="line">| sym0 link addr | sym0 reloc flag | sym0 link value | sym1 link ...</div><div class="line">+----------------+-----------------------------------+-----------------</div></pre></td></tr></table></figure>
+<p>每个relocable symbol有三个entry, 每个entry都是32bit, 分别为link addr, relocation flag, link value. 对于需要重定位内核运行位置的情况, 我们需要把所有FLAG为R_AARCH64_RELATIVE的的entry指定的symbol进行修正, 修正方法为将link addr + offset的值修改为link value + offset. 其实这个段的含义就是说在IMAGE中, link addr的位置中存放的值是地址相关地值, 如果IMAGE发生了整体偏移, 那么link addr的位置实际在link addr + offset, 要把实际位置上的value修正, 这样说不知道是不是更清晰一些.</p>
+<p>具体请参阅<a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=8&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwjimoD4pOXXAhVGnJQKHZLkAGEQFghZMAc&amp;url=http%3A%2F%2Finfocenter.arm.com%2Fhelp%2Ftopic%2Fcom.arm.doc.ihi0056b%2FIHI0056B_aaelf64.pdf&amp;usg=AOvVaw3BbJ_w77JynYnsJJQ767_d" target="_blank" rel="external">ELF for the ARM 64-bit Architecture (AArch64)</a>, 我也没有细致研究.</p>
+<p><code>__primary_switched</code>相关的内容我们放到下一篇内容中, 每一篇内容都少点, 好理解一些.</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/11/30/arm64-linux启动流程分析08-正式跳入内核空间虚拟地址段运行/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          arm64_linux启动流程分析08_正式跳入内核空间虚拟地址段运行
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/11/30/arm64-linux启动流程分析06-CPU的一些初始化/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">arm64_linux启动流程分析06_CPU的一些初始化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-    
+
 
 
           </div>
@@ -229,9 +357,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",

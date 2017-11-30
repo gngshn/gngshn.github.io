@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>Tag: 随笔 | gngshn的博客</title>
+  <title>arm64_linux启动流程分析02_保存启动信息 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="linux程序员一枚">
-<meta name="keywords" content="linux, driver, python3">
-<meta property="og:type" content="website">
-<meta property="og:title" content="gngshn的博客">
-<meta property="og:url" content="http://gngshn.github.io/tags/随笔/index.html">
+  <meta name="description" content="解上节, 我们先来看看bl    preserve_boot_args12345678910111213preserve_boot_args:	mov	x21, x0				// x21=FDT	adr_l	x0, boot_args			// record the contents of	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry	stp	x2">
+<meta name="keywords" content="linux,arm64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析02_保存启动信息">
+<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析02-保存启动信息/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="linux程序员一枚">
+<meta property="og:description" content="解上节, 我们先来看看bl    preserve_boot_args12345678910111213preserve_boot_args:	mov	x21, x0				// x21=FDT	adr_l	x0, boot_args			// record the contents of	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry	stp	x2">
+<meta property="og:updated_time" content="2017-11-30T04:59:52.340Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gngshn的博客">
-<meta name="twitter:description" content="linux程序员一枚">
+<meta name="twitter:title" content="arm64_linux启动流程分析02_保存启动信息">
+<meta name="twitter:description" content="解上节, 我们先来看看bl    preserve_boot_args12345678910111213preserve_boot_args:	mov	x21, x0				// x21=FDT	adr_l	x0, boot_args			// record the contents of	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry	stp	x2">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -153,60 +154,194 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-arm64-linux启动流程分析02-保存启动信息" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/15/正式开始书写自己的博客/" class="archive-article-date">
-  	<time datetime="2017-04-15T12:47:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/15/正式开始书写自己的博客/">正式开始书写自己的博客</a>
+    <h1 class="article-title" itemprop="name">
+      arm64_linux启动流程分析02_保存启动信息
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>解上节, 我们先来看看<code>bl    preserve_boot_args</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">preserve_boot_args:</div><div class="line">	mov	x21, x0				// x21=FDT</div><div class="line"></div><div class="line">	adr_l	x0, boot_args			// record the contents of</div><div class="line">	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry</div><div class="line">	stp	x2, x3, [x0, #16]</div><div class="line"></div><div class="line">	dmb	sy				// needed before dc ivac with</div><div class="line">						// MMU off</div><div class="line"></div><div class="line">	mov	x1, #0x20			// 4 x 8 bytes</div><div class="line">	b	__inval_dcache_area		// tail call</div><div class="line">ENDPROC(preserve_boot_args)</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>代码的含义一目了然, 把存fdt内存地址的x0保存到x21寄存器. 然后把启动参数x0, x1, x2, x3全部保存到boot_args数组中.</p>
+<p>arm64 linux规定:</p>
+<blockquote>
+<p> Primary CPU general-purpose register settings</p>
+<p> x0 = physical address of device tree blob (dtb) in system RAM.</p>
+<p> x1 = 0 (reserved for future use)</p>
+<p> x2 = 0 (reserved for future use)</p>
+<p> x3 = 0 (reserved for future use)</p>
+</blockquote>
+<p>这里值得注意的有几点</p>
+<ol>
+<li>这里有用到<code>adr_l</code>, arm64并没有这个指令, 这是一个宏</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">	.macro	adr_l, dst, sym</div><div class="line">#ifndef MODULE</div><div class="line">	adrp	\dst, \sym</div><div class="line">	add	\dst, \dst, :lo12:\sym</div><div class="line">#else</div><div class="line">	movz	\dst, #:abs_g3:\sym</div><div class="line">	movk	\dst, #:abs_g2_nc:\sym</div><div class="line">	movk	\dst, #:abs_g1_nc:\sym</div><div class="line">	movk	\dst, #:abs_g0_nc:\sym</div><div class="line">#endif</div><div class="line">	.endm</div></pre></td></tr></table></figure>
+<p>可以看到, 这里的<code>adr_l</code>拆分成了两条指令, adrp + add, adrp指令最大寻址空间时+-4GB, 但是所寻址的地址是4KB对齐的. 所以这里在加了一个add指令来修正地址的低12bit, 从而实现了这个加载+-4GB任意位置的运行时地址的宏.</p>
+<ol>
+<li><code>__inval_dcache_area</code>函数用来invalidate指定区域的dcache, 具体如下</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">ENTRY(__inval_dcache_area)</div><div class="line">	/* FALLTHROUGH */</div><div class="line"></div><div class="line">/*</div><div class="line"> *	__dma_inv_area(start, size)</div><div class="line"> *	- start   - virtual start address of region</div><div class="line"> *	- size    - size in question</div><div class="line"> */</div><div class="line">__dma_inv_area:</div><div class="line">	add	x1, x1, x0</div><div class="line">	dcache_line_size x2, x3</div><div class="line">	sub	x3, x2, #1</div><div class="line">	tst	x1, x3				// end cache line aligned?</div><div class="line">	bic	x1, x1, x3</div><div class="line">	b.eq	1f</div><div class="line">	dc	civac, x1			// clean &amp; invalidate D / U line</div><div class="line">1:	tst	x0, x3				// start cache line aligned?</div><div class="line">	bic	x0, x0, x3</div><div class="line">	b.eq	2f</div><div class="line">	dc	civac, x0			// clean &amp; invalidate D / U line</div><div class="line">	b	3f</div><div class="line">2:	dc	ivac, x0			// invalidate D / U line</div><div class="line">3:	add	x0, x0, x2</div><div class="line">	cmp	x0, x1</div><div class="line">	b.lo	2b</div><div class="line">	dsb	sy</div><div class="line">	ret</div><div class="line">ENDPIPROC(__inval_dcache_area)</div></pre></td></tr></table></figure>
+<p>可以看到如果指定内存区域有跨越cacheline, 那么对两边跨越了cacheline的地址使用的clean + invalidate, 对于中间区域可以直接invalidate不用写回内存, 从而加快invalidate速度.</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux/" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/11/30/arm64-linux启动流程分析03-设定当前core的启动状态/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          arm64_linux启动流程分析03_设定当前core的启动状态
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">arm64_linux启动流程分析01_内核的入口</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-    
+
 
 
           </div>
@@ -229,9 +364,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",
