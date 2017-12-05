@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析07-开启MMU切换到虚拟地址/index.html">
 <meta property="og:site_name" content="gngshn的博客">
 <meta property="og:description" content="这篇内容我们来讲述__primary_switch">
-<meta property="og:updated_time" content="2017-11-30T06:58:32.312Z">
+<meta property="og:updated_time" content="2017-12-05T09:04:44.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="arm64_linux启动流程分析07_开启MMU切换到虚拟地址">
 <meta name="twitter:description" content="这篇内容我们来讲述__primary_switch">
@@ -185,7 +185,7 @@
 <p><code>__rela_offset</code>定义在链接文件中, 如下:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.rela : ALIGN(<span class="number">8</span>) &#123;</div><div class="line">		*(.rela .rela*)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	__rela_offset	= ABSOLUTE(ADDR(.rela) - KIMAGE_VADDR);</div><div class="line">	__rela_size	= SIZEOF(.rela);</div></pre></td></tr></table></figure>
 <p>可以看出<code>__rela_offset</code>是<code>.rela</code>段相对KERNEL起始地址的偏移. <code>__rela_size</code>是<code>.rela</code>段的偏移.<br>通过对汇编代码的阅读, 我们大致可以看出<code>.rela</code>段的内容如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">|     <span class="number">32</span> bit     |      <span class="number">32</span> bit     |      <span class="number">32</span> bit     |     ...</div><div class="line">+----------------+-----------------------------------+-----------------</div><div class="line">| sym0 link addr | sym0 reloc flag | sym0 link value | sym1 link ...</div><div class="line">+----------------+-----------------------------------+-----------------</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">|     <span class="number">64</span> bit     |      <span class="number">64</span> bit     |      <span class="number">64</span> bit     |     ...</div><div class="line">+----------------+-----------------------------------+-----------------</div><div class="line">| sym0 link addr | sym0 reloc flag | sym0 link value | sym1 link ...</div><div class="line">+----------------+-----------------------------------+-----------------</div></pre></td></tr></table></figure>
 <p>每个relocable symbol有三个entry, 每个entry都是32bit, 分别为link addr, relocation flag, link value. 对于需要重定位内核运行位置的情况, 我们需要把所有FLAG为R_AARCH64_RELATIVE的的entry指定的symbol进行修正, 修正方法为将link addr + offset的值修改为link value + offset. 其实这个段的含义就是说在IMAGE中, link addr的位置中存放的值是地址相关地值, 如果IMAGE发生了整体偏移, 那么link addr的位置实际在link addr + offset, 要把实际位置上的value修正, 这样说不知道是不是更清晰一些.</p>
 <p>具体请参阅<a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=8&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwjimoD4pOXXAhVGnJQKHZLkAGEQFghZMAc&amp;url=http%3A%2F%2Finfocenter.arm.com%2Fhelp%2Ftopic%2Fcom.arm.doc.ihi0056b%2FIHI0056B_aaelf64.pdf&amp;usg=AOvVaw3BbJ_w77JynYnsJJQ767_d" target="_blank" rel="external">ELF for the ARM 64-bit Architecture (AArch64)</a>, 我也没有细致研究.</p>
 <p><code>__primary_switched</code>相关的内容我们放到下一篇内容中, 每一篇内容都少点, 好理解一些.</p>
@@ -427,19 +427,19 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">driver</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">driver</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
