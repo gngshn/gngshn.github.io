@@ -9,13 +9,13 @@
   <title>mmap读写寄存器应注意不要越界 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
-<meta name="keywords" content="mmap,driver,linux">
+<meta name="keywords" content="driver,linux,mmap">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mmap读写寄存器应注意不要越界">
 <meta property="og:url" content="http://gngshn.github.io/2017/04/15/mmap读写寄存器应注意不要越界/index.html">
 <meta property="og:site_name" content="gngshn的博客">
 <meta property="og:description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
-<meta property="og:updated_time" content="2017-09-01T09:58:00.619Z">
+<meta property="og:updated_time" content="2017-09-01T09:58:00.620Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mmap读写寄存器应注意不要越界">
 <meta name="twitter:description" content="前两天使用/dev/mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有">
@@ -217,15 +217,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">mmap</a>
         		</li>
       		
 		</ul>
@@ -342,7 +342,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 gngshn
+    		&copy; 2018 gngshn
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -421,6 +421,14 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">driver</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">mmap</a>
               </li>
              
@@ -433,19 +441,23 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">driver</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">libuv</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">arm64</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">python, numpy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">numpy</a>
               </li>
             
             <div class="clearfix"></div>

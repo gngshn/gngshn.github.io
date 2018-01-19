@@ -6,19 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>libuv 源码分析(4) - libuv的工作队列(线程池) | gngshn的博客</title>
+  <title>Archives: 2018 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#x40;&amp;#x67;&amp;#109;&amp;#97;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#109; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_lo">
-<meta name="keywords" content="libuv">
-<meta property="og:type" content="article">
-<meta property="og:title" content="libuv 源码分析(4) - libuv的工作队列(线程池)">
-<meta property="og:url" content="http://gngshn.github.io/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/index.html">
+  <meta name="description" content="linux程序员一枚">
+<meta name="keywords" content="linux, driver, python3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="gngshn的博客">
+<meta property="og:url" content="http://gngshn.github.io/archives/2018/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#x40;&amp;#x67;&amp;#109;&amp;#97;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#109; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_lo">
-<meta property="og:updated_time" content="2017-09-05T01:44:58.140Z">
+<meta property="og:description" content="linux程序员一枚">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="libuv 源码分析(4) - libuv的工作队列(线程池)">
-<meta name="twitter:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#x40;&amp;#x67;&amp;#109;&amp;#97;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#109; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_lo">
+<meta name="twitter:title" content="gngshn的博客">
+<meta name="twitter:description" content="linux程序员一枚">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -154,182 +153,75 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-libuv-源码分析-4-libuv的工作队列-线程池" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      libuv 源码分析(4) - libuv的工作队列(线程池)
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2018" class="archive-year">2018</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2018/01/19/利用numpy的矩阵运算实现自定义转换矩阵的YCbCr2RGB工具/" class="archive-article-date">
+  	<time datetime="2018-01-19T03:04:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-19</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2018/01/19/利用numpy的矩阵运算实现自定义转换矩阵的YCbCr2RGB工具/">利用numpy的矩阵运算实现自定义转换矩阵的YCbCr2RGB工具</a>
     </h1>
   
 
-        
-        <a href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/" class="archive-article-date">
-  	<time datetime="2017-09-01T03:59:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>by gngshn <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#x40;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#109;">&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#x40;&#x67;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#111;&#109;</a></p>
-<p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function">UV_EXTERN <span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></div><div class="line"><span class="function"><span class="params">                            <span class="keyword">uv_work_t</span>* req,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_work_cb work_cb,</span></span></div><div class="line"><span class="function"><span class="params">                            uv_after_work_cb after_work_cb)</span></span>;</div></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>这个工作队列实现方式就是把任务(work_cb)交给线程池来处理, 并且任务完成后, 调用相应的回调函数(after_work_cb).<br><br>我们先来看看这个函数的实现:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></div><div class="line"><span class="function"><span class="params">                  <span class="keyword">uv_work_t</span>* req,</span></span></div><div class="line"><span class="function"><span class="params">                  uv_work_cb work_cb,</span></span></div><div class="line"><span class="function"><span class="params">                  uv_after_work_cb after_work_cb)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (work_cb == <span class="literal">NULL</span>)</div><div class="line">    <span class="keyword">return</span> UV_EINVAL;</div><div class="line"></div><div class="line">  uv__req_init(loop, req, UV_WORK);</div><div class="line">  req-&gt;loop = loop;</div><div class="line">  req-&gt;work_cb = work_cb;</div><div class="line">  req-&gt;after_work_cb = after_work_cb;</div><div class="line">  uv__work_submit(loop, &amp;req-&gt;work_req, uv__queue_work, uv__queue_done);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到函数首先初始化这个请求(req), 然后就调用<code>uv__work_submit</code>完成剩余的工作.<br><br>下面我们主要就来分析一下<code>uv__work_submit</code>的操作过程. 看看libuv是如何调用<code>work_cb</code>来完成任务并调用到<code>after_work_cb</code>回调函数的.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">uv__work_submit</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></div><div class="line"><span class="function"><span class="params">                     struct uv__work* w,</span></span></div><div class="line">                     void (*work)(struct uv__work* w),</div><div class="line">                     <span class="keyword">void</span> (*done)(struct uv__work* w, <span class="keyword">int</span> status)) &#123;</div><div class="line">  uv_once(&amp;once, init_once);</div><div class="line">  w-&gt;loop = loop;</div><div class="line">  w-&gt;work = work;</div><div class="line">  w-&gt;done = done;</div><div class="line">  post(&amp;w-&gt;wq);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><code>uv_once(&amp;once, init_once);</code>用来初始化libuv的线程池, 只会被调用一次. 线程池中的线程都是执行这样一个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">worker</span><span class="params">(<span class="keyword">void</span>* arg)</span> </span>&#123;</div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">uv__work</span>* <span class="title">w</span>;</span></div><div class="line">  QUEUE* q;</div><div class="line"></div><div class="line">  (<span class="keyword">void</span>) arg;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (;;) &#123;</div><div class="line">    uv_mutex_lock(&amp;mutex);</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (QUEUE_EMPTY(&amp;wq)) &#123;</div><div class="line">      idle_threads += <span class="number">1</span>;</div><div class="line">      uv_cond_wait(&amp;cond, &amp;mutex);</div><div class="line">      idle_threads -= <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line">    ......</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到每个线程都是等待在<code>uv_cond_wait(&amp;cond, &amp;mutex);</code>.<br><br>初始化完成后, 会调用<code>post(&amp;w-&gt;wq)</code>:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">post</span><span class="params">(QUEUE* q)</span> </span>&#123;</div><div class="line">  uv_mutex_lock(&amp;mutex);</div><div class="line">  QUEUE_INSERT_TAIL(&amp;wq, q);</div><div class="line">  <span class="keyword">if</span> (idle_threads &gt; <span class="number">0</span>)</div><div class="line">    uv_cond_signal(&amp;cond);</div><div class="line">  uv_mutex_unlock(&amp;mutex);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到<code>post(&amp;w-&gt;wq)</code>就是把<code>w</code>挂到全局的<code>wq</code>上面, 然后调用<code>uv_cond_signal</code>, 这就会唤醒一个前面的正在等待的线程来处理这个任务, 一个线程唤醒后, 就会执行work函数的后续部分.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">worker</span><span class="params">(<span class="keyword">void</span>* arg)</span> </span>&#123;</div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">uv__work</span>* <span class="title">w</span>;</span></div><div class="line">  QUEUE* q;</div><div class="line"></div><div class="line">  (<span class="keyword">void</span>) arg;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (;;) &#123;</div><div class="line">    uv_mutex_lock(&amp;mutex);</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (QUEUE_EMPTY(&amp;wq)) &#123;</div><div class="line">      idle_threads += <span class="number">1</span>;</div><div class="line">      uv_cond_wait(&amp;cond, &amp;mutex);</div><div class="line">      idle_threads -= <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    q = QUEUE_HEAD(&amp;wq);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (q == &amp;exit_message)</div><div class="line">      uv_cond_signal(&amp;cond);</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">      QUEUE_REMOVE(q);</div><div class="line">      QUEUE_INIT(q);  <span class="comment">/* Signal uv_cancel() that the work req is</span></div><div class="line"><span class="comment">                             executing. */</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    uv_mutex_unlock(&amp;mutex);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (q == &amp;exit_message)</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    w = QUEUE_DATA(q, struct uv__work, wq);</div><div class="line">    w-&gt;work(w);</div><div class="line"></div><div class="line">    uv_mutex_lock(&amp;w-&gt;loop-&gt;wq_mutex);</div><div class="line">    w-&gt;work = <span class="literal">NULL</span>;  <span class="comment">/* Signal uv_cancel() that the work req is done</span></div><div class="line"><span class="comment">                        executing. */</span></div><div class="line">    QUEUE_INSERT_TAIL(&amp;w-&gt;loop-&gt;wq, &amp;w-&gt;wq);</div><div class="line">    uv_async_send(&amp;w-&gt;loop-&gt;wq_async);</div><div class="line">    uv_mutex_unlock(&amp;w-&gt;loop-&gt;wq_mutex);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>线程先取出一个链表的元素q.<br><br><code>exit_message</code>相关的操作是用来退出所有线程的, 在libuv退出时, <code>post(&amp;exit_message);</code>被调用, 这会让libuv的所有线程都退出.<br><br>如果没有<code>exit_message</code>, 线程正常往后执行. 先把<code>q</code>从<code>wq</code>链表中删除, 然后调用<code>w-&gt;work</code>(就是最开始的<code>work_cb</code>, 相当于执行工作), 然后把w放到<code>loop-&gt;wq</code>中并调用<code>uv_async_send</code>向event loop发送信号. event loop会注意这个信号并作出相应的处理.<br><br>为了弄清楚event loop是如何注意到这个信号的, 我们先来看看<code>uv_async_send</code>都干了什么<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">uv_async_send</span><span class="params">(<span class="keyword">uv_async_t</span>* handle)</span> </span>&#123;</div><div class="line">  <span class="comment">/* Do a cheap read first. */</span></div><div class="line">  <span class="keyword">if</span> (ACCESS_ONCE(<span class="keyword">int</span>, handle-&gt;pending) != <span class="number">0</span>)</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (cmpxchgi(&amp;handle-&gt;pending, <span class="number">0</span>, <span class="number">1</span>) == <span class="number">0</span>)</div><div class="line">    uv__async_send(handle-&gt;loop);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里async事件在还没有被处理时(penging=1)多次发送也只有一次生效<br><br>判断<code>handle-&gt;pending</code>如果是1, 表示已经发送过并且还没处理, 所以直接返回.<br><br>如果是0就表明没有pending事件, 原子的设置<code>pending</code>为1, 并调用<code>uv__async_send</code>, 这个函数会往<code>loop-&gt;async_io_watcher.fd</code>(一个eventfd)里面写入’\n’, 从而event_loop会在epoll中发现. 发现后会调用相应的回调函数, 那么回调函数是什么呢?<br><br>在<code>uv_loop_init</code>中会调用<code>uv_async_init(loop, &amp;loop-&gt;wq_async, uv__work_done)</code>来指定回调函数是<code>uv__work_done</code>:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">uv_async_init</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop, <span class="keyword">uv_async_t</span>* handle, uv_async_cb async_cb)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> err;</div><div class="line"></div><div class="line">  err = uv__async_start(loop);</div><div class="line">  <span class="keyword">if</span> (err)</div><div class="line">    <span class="keyword">return</span> err;</div><div class="line"></div><div class="line">  uv__handle_init(loop, (<span class="keyword">uv_handle_t</span>*)handle, UV_ASYNC);</div><div class="line">  handle-&gt;async_cb = async_cb;</div><div class="line">  handle-&gt;pending = <span class="number">0</span>;</div><div class="line"></div><div class="line">  QUEUE_INSERT_TAIL(&amp;loop-&gt;async_handles, &amp;handle-&gt;<span class="built_in">queue</span>);</div><div class="line">  uv__handle_start(handle);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><code>uv__async_start</code>中创建eventfd, 并将其POLLIN事件加入event loop, 事件发生时会调用<code>uv__async_io</code><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">uv__io_init(&amp;loop-&gt;async_io_watcher, uv__async_io, pipefd[<span class="number">0</span>]);</div><div class="line">uv__io_start(loop, &amp;loop-&gt;async_io_watcher, POLLIN);</div></pre></td></tr></table></figure></p>
-<p>然后把handle初始化并配置async_cb和pending加入到event loop的async_handles中, 并启动handle.<br><br>事件发生后调用<code>uv__async_io</code>:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">uv__async_io</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop, <span class="keyword">uv__io_t</span>* w, <span class="keyword">unsigned</span> <span class="keyword">int</span> events)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> buf[<span class="number">1024</span>];</div><div class="line">  <span class="keyword">ssize_t</span> r;</div><div class="line">  QUEUE <span class="built_in">queue</span>;</div><div class="line">  QUEUE* q;</div><div class="line">  <span class="keyword">uv_async_t</span>* h;</div><div class="line"></div><div class="line">  assert(w == &amp;loop-&gt;async_io_watcher);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (;;) &#123;</div><div class="line">    r = read(w-&gt;fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (r == <span class="keyword">sizeof</span>(buf))</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (r != <span class="number">-1</span>)</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (errno == EAGAIN || errno == EWOULDBLOCK)</div><div class="line">      <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (errno == EINTR)</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    <span class="built_in">abort</span>();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  QUEUE_MOVE(&amp;loop-&gt;async_handles, &amp;<span class="built_in">queue</span>);</div><div class="line">  <span class="keyword">while</span> (!QUEUE_EMPTY(&amp;<span class="built_in">queue</span>)) &#123;</div><div class="line">    q = QUEUE_HEAD(&amp;<span class="built_in">queue</span>);</div><div class="line">    h = QUEUE_DATA(q, <span class="keyword">uv_async_t</span>, <span class="built_in">queue</span>);</div><div class="line"></div><div class="line">    QUEUE_REMOVE(q);</div><div class="line">    QUEUE_INSERT_TAIL(&amp;loop-&gt;async_handles, q);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (cmpxchgi(&amp;h-&gt;pending, <span class="number">1</span>, <span class="number">0</span>) == <span class="number">0</span>)</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (h-&gt;async_cb == <span class="literal">NULL</span>)</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">    h-&gt;async_cb(h);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以看到这个函数先把eventfd的内容读空, 然后一次对async_handles中的元素判断其pending, 如果为1就原子的将其至0, 这也表示handle有待处理的异步通知, 因此就会调用<code>h-&gt;async_cb(h)</code><br><br>前面说过(<code>uv_async_init(loop, &amp;loop-&gt;wq_async, uv__work_done)</code>)对于我们的线程池来说这个回调是<code>uv__work_done</code>:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">uv__work_done</span><span class="params">(<span class="keyword">uv_async_t</span>* handle)</span> </span>&#123;</div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">uv__work</span>* <span class="title">w</span>;</span></div><div class="line">  <span class="keyword">uv_loop_t</span>* loop;</div><div class="line">  QUEUE* q;</div><div class="line">  QUEUE wq;</div><div class="line">  <span class="keyword">int</span> err;</div><div class="line"></div><div class="line">  loop = container_of(handle, <span class="keyword">uv_loop_t</span>, wq_async);</div><div class="line">  uv_mutex_lock(&amp;loop-&gt;wq_mutex);</div><div class="line">  QUEUE_MOVE(&amp;loop-&gt;wq, &amp;wq);</div><div class="line">  uv_mutex_unlock(&amp;loop-&gt;wq_mutex);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> (!QUEUE_EMPTY(&amp;wq)) &#123;</div><div class="line">    q = QUEUE_HEAD(&amp;wq);</div><div class="line">    QUEUE_REMOVE(q);</div><div class="line"></div><div class="line">    w = container_of(q, struct uv__work, wq);</div><div class="line">    err = (w-&gt;work == uv__cancelled) ? UV_ECANCELED : <span class="number">0</span>;</div><div class="line">    w-&gt;done(w, err);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>函数把<code>loop-&gt;wq</code>的元素挨个删除并调用<code>done</code>回调函数. 这个<code>done</code>回调函数就是我们前面说的<code>after_work_cb</code>回调.<br>至此, libuv的工作队列的实现就说完了.</p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>并不能打赏 ^_^<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">libuv</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">numpy</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/libuv/" class="article-tag-list-link color1">libuv</a>
+        			<a href="/categories/image/" class="article-tag-list-link color1">image</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://gngshn.github.io/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2017/09/01/libuv-源码分析-5-文件操作流程/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          libuv 源码分析(5) - 文件操作流程
-        
-      </div>
-    </a>
   
   
-    <a href="/2017/09/01/libuv-源码分析-3-poll过程/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">libuv 源码阅读(3) - poll过程</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-
-
-
-
-  
-    <div class="duoshuo"></div>
+    </div></section>
   
 
-
+    
 
 
           </div>
@@ -352,8 +244,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
