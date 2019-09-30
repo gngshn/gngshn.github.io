@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>arm64_linux启动流程分析04_kernel_address_space_layout_randomization | gngshn的博客</title>
+  <title>arm64_linux启动流程分析04_KASLR | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="这篇内容主要是说一下KASLR KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图 12345678910+---------------+-------+-------------+----------------------|               |">
 <meta name="keywords" content="linux,arm64">
 <meta property="og:type" content="article">
-<meta property="og:title" content="arm64_linux启动流程分析04_kernel_address_space_layout_randomization">
+<meta property="og:title" content="arm64_linux启动流程分析04_KASLR">
 <meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析04-KASLR/index.html">
 <meta property="og:site_name" content="gngshn的博客">
 <meta property="og:description" content="这篇内容主要是说一下KASLR KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图 12345678910+---------------+-------+-------------+----------------------|               |">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2017-11-30T06:58:32.000Z">
+<meta property="og:updated_time" content="2019-09-30T07:51:42.771Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="arm64_linux启动流程分析04_kernel_address_space_layout_randomization">
+<meta name="twitter:title" content="arm64_linux启动流程分析04_KASLR">
 <meta name="twitter:description" content="这篇内容主要是说一下KASLR KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图 12345678910+---------------+-------+-------------+----------------------|               |">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
@@ -162,7 +162,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      arm64_linux启动流程分析04_kernel_address_space_layout_randomization
+      arm64_linux启动流程分析04_KASLR
     </h1>
   
 
@@ -339,7 +339,7 @@
 <script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: 'arm64_linux启动流程分析04_kernel_address_space_layout_randomization',
+  id: 'arm64_linux启动流程分析04_KASLR',
   owner: 'gngshn',
   repo: 'gngshn.github.io',
   oauth: {
