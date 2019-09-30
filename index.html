@@ -615,19 +615,19 @@
 
 
   
-    <article id="post-arm64-linux启动流程分析04-kernel-address-space-layout-randomization" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-arm64-linux启动流程分析04-KASLR" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/">arm64_linux启动流程分析04_kernel_address_space_layout_randomization</a>
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析04-KASLR/">arm64_linux启动流程分析04_kernel_address_space_layout_randomization</a>
     </h1>
   
 
         
-        <a href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/" class="archive-article-date">
+        <a href="/2017/11/30/arm64-linux启动流程分析04-KASLR/" class="archive-article-date">
   	<time datetime="2017-11-30T04:00:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
 </a>
         
@@ -639,7 +639,7 @@
 <p>KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|               |       |             |</span><br><span class="line">| <span class="number">2</span>M align resv | KASLR | TEXT_OFFSET | KERNEL IMAGE</span><br><span class="line">|               |       |             |</span><br><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|                       |             |</span><br><span class="line">|                       |             +----内核在DDR中的位置.</span><br><span class="line">|                       +----------------- ARM64规定的KERNEL运行前必须放在 <span class="number">2</span>M对齐地址+TEXT_OFFSET 的地方</span><br><span class="line">|                                          这里是经过KASLR技术relocate之后的位置.</span><br><span class="line">+----------------------------------------- DDR起始地址.</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/#more">more >></a>
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-KASLR/#more">more >></a>
         
       
 
@@ -678,7 +678,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-kernel-address-space-layout-randomization/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析04-KASLR/">展开全文 >></a>
         </p>
       
 
