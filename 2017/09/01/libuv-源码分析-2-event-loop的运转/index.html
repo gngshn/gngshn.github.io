@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://gngshn.github.io">
   <title>libuv 源码分析(2) - event loop的运转 | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#x68;&amp;#x6e;&amp;#x40;&amp;#x67;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述lib">
+  <meta name="description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#115;&amp;#x68;&amp;#110;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述libuv">
 <meta name="keywords" content="libuv">
 <meta property="og:type" content="article">
 <meta property="og:title" content="libuv 源码分析(2) - event loop的运转">
 <meta property="og:url" content="http://gngshn.github.io/2017/09/01/libuv-源码分析-2-event-loop的运转/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#x68;&amp;#x6e;&amp;#x40;&amp;#x67;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述lib">
+<meta property="og:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#115;&amp;#x68;&amp;#110;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述libuv">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://docs.libuv.org/en/v1.x/_images/loop_iteration.png">
 <meta property="og:updated_time" content="2022-04-26T03:37:48.380Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="libuv 源码分析(2) - event loop的运转">
-<meta name="twitter:description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#x68;&amp;#x6e;&amp;#x40;&amp;#x67;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述lib">
+<meta name="twitter:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#115;&amp;#x68;&amp;#110;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d; 上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.对于 event loop的运转在其官方的文档中有详细的描述libuv">
 <meta name="twitter:image" content="http://docs.libuv.org/en/v1.x/_images/loop_iteration.png">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
@@ -177,7 +177,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#103;&#110;&#103;&#115;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;" target="_blank" rel="noopener">&#103;&#110;&#103;&#115;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#x67;&#110;&#x67;&#115;&#x68;&#110;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;" target="_blank" rel="noopener">&#x67;&#110;&#x67;&#115;&#x68;&#110;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;</a></p>
 <p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="noopener">libuv design overview</a><br>event loop的流程图如下<br><a id="more"></a><br><img src="http://docs.libuv.org/en/v1.x/_images/loop_iteration.png" alt="libuv event loop"><br>下面我们就从源码的角度来看看整个过程.<br>先看看一个最简单的 libuv程序:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">uv_loop_t</span> *loop = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">uv_loop_t</span>));</span><br><span class="line">    uv_loop_init(loop);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Now quitting.\n"</span>);</span><br><span class="line">    uv_run(loop, UV_RUN_DEFAULT);</span><br><span class="line"></span><br><span class="line">    uv_loop_close(loop);</span><br><span class="line">    <span class="built_in">free</span>(loop);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>可以看到 libuv的 event loop过程在 <code>uv_run</code>中实现的. 我们下面来看看其过程.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uv_run</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop, uv_run_mode mode)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> timeout;</span><br><span class="line">  <span class="keyword">int</span> r;</span><br><span class="line">  <span class="keyword">int</span> ran_pending;</span><br><span class="line"></span><br><span class="line">  r = uv__loop_alive(loop);</span><br><span class="line">  <span class="keyword">if</span> (!r)</span><br><span class="line">    uv__update_time(loop);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (r != <span class="number">0</span> &amp;&amp; loop-&gt;stop_flag == <span class="number">0</span>) &#123;</span><br><span class="line">    uv__update_time(loop);</span><br><span class="line">    uv__run_timers(loop);</span><br><span class="line">    ran_pending = uv__run_pending(loop);</span><br><span class="line">    uv__run_idle(loop);</span><br><span class="line">    uv__run_prepare(loop);</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> ((mode == UV_RUN_ONCE &amp;&amp; !ran_pending) || mode == UV_RUN_DEFAULT)</span><br><span class="line">      timeout = uv_backend_timeout(loop);</span><br><span class="line"></span><br><span class="line">    uv__io_poll(loop, timeout);</span><br><span class="line">    uv__run_check(loop);</span><br><span class="line">    uv__run_closing_handles(loop);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode == UV_RUN_ONCE) &#123;</span><br><span class="line">      <span class="comment">/* UV_RUN_ONCE implies forward progress: at least one callback must have</span></span><br><span class="line"><span class="comment">       * been invoked when it returns. uv__io_poll() can return without doing</span></span><br><span class="line"><span class="comment">       * I/O (meaning: no callbacks) when its timeout expires - which means we</span></span><br><span class="line"><span class="comment">       * have pending timers that satisfy the forward progress constraint.</span></span><br><span class="line"><span class="comment">       *</span></span><br><span class="line"><span class="comment">       * UV_RUN_NOWAIT makes no guarantees about progress so it's omitted from</span></span><br><span class="line"><span class="comment">       * the check.</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      uv__update_time(loop);</span><br><span class="line">      uv__run_timers(loop);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    r = uv__loop_alive(loop);</span><br><span class="line">    <span class="keyword">if</span> (mode == UV_RUN_ONCE || mode == UV_RUN_NOWAIT)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* The if statement lets gcc compile it to a conditional store. Avoids</span></span><br><span class="line"><span class="comment">   * dirtying a cache line.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">if</span> (loop-&gt;stop_flag != <span class="number">0</span>)</span><br><span class="line">    loop-&gt;stop_flag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>函数首先判断 event loop是否是 alive的, 如果不是, 更新 loop时间然后就退出了. 这里判断 alive的函数为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">uv__loop_alive</span><span class="params">(<span class="keyword">const</span> <span class="keyword">uv_loop_t</span>* loop)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> uv__has_active_handles(loop) ||</span><br><span class="line">         uv__has_active_reqs(loop) ||</span><br><span class="line">         loop-&gt;closing_handles != <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -450,11 +450,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color2">driver</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -462,11 +462,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">driver</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -483,6 +483,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gdb</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">arm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
               </li>
              
               <li class="article-tag-list-item">
