@@ -6,20 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>arm64_linux启动流程分析01_内核的入口 | gngshn的博客</title>
+  <title>Tag: bayer | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
-<meta name="keywords" content="linux,arm64">
-<meta property="og:type" content="article">
-<meta property="og:title" content="arm64_linux启动流程分析01_内核的入口">
-<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析01-内核的入口/index.html">
+  <meta name="description" content="linux程序员一枚">
+<meta name="keywords" content="linux, driver, python3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="gngshn的博客">
+<meta property="og:url" content="http://gngshn.github.io/tags/bayer/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
+<meta property="og:description" content="linux程序员一枚">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-04-26T03:37:48.380Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="arm64_linux启动流程分析01_内核的入口">
-<meta name="twitter:description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
+<meta name="twitter:title" content="gngshn的博客">
+<meta name="twitter:description" content="linux程序员一枚">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -155,200 +154,68 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-arm64-linux启动流程分析01-内核的入口" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      arm64_linux启动流程分析01_内核的入口
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2022" class="archive-year">2022</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2022/05/13/使用Rust将Bayer图进行demosaic/" class="archive-article-date">
+  	<time datetime="2022-05-13T10:42:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-13</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2022/05/13/使用Rust将Bayer图进行demosaic/">使用Rust将Bayer图进行demosaic</a>
     </h1>
   
 
-        
-        <a href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/" class="archive-article-date">
-  	<time datetime="2017-11-30T03:54:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析</p>
-<p>首先看链接文件如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(_text)</span><br><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	.....省略部分无关内容....</span><br><span class="line"></span><br><span class="line">	. = KIMAGE_VADDR + TEXT_OFFSET;</span><br><span class="line"></span><br><span class="line">	.head.text : &#123;</span><br><span class="line">		_text = .;</span><br><span class="line">		HEAD_TEXT</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>可以看到入口点在<code>_text</code>. 而<code>_text</code>是指向<code>.head.text</code>段的起始位置. 所以内核是从<code>.head.text</code>开始运行的. 那么这个段是写什么内容呢?</p>
-<p><code>HEAD_TEXT</code>是一个宏<code>#define HEAD_TEXT  *(.head.text)</code></p>
-<p>在<code>arch/arm64/kernel/head.S</code>中有</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	__HEAD</span><br><span class="line">_head:</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * DO NOT MODIFY. Image header expected by Linux boot-loaders.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_EFI</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * This add instruction has no meaningful effect except that</span></span><br><span class="line"><span class="comment">	 * its opcode forms the magic "MZ" signature required by UEFI.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	add	x13, x18, #<span class="number">0x16</span></span><br><span class="line">	b	stext</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">	b	stext				<span class="comment">// branch to kernel start, magic</span></span><br><span class="line">	.<span class="keyword">long</span>	<span class="number">0</span>				<span class="comment">// reserved</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	...省略后面的内容...</span><br></pre></td></tr></table></figure>
-<p>所以对应到code, 内核是从<code>_head</code>开始运行的. 这个开始点放置了一个arm64 linux的header:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">u32 code0;			<span class="comment">/* Executable code */</span></span><br><span class="line">u32 code1;			<span class="comment">/* Executable code */</span></span><br><span class="line">u64 text_offset;		<span class="comment">/* Image load offset, little endian */</span></span><br><span class="line">u64 image_size;		<span class="comment">/* Effective Image size, little endian */</span></span><br><span class="line">u64 flags;			<span class="comment">/* kernel flags, little endian */</span></span><br><span class="line">u64 res2	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u64 res3	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u64 res4	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u32 magic	= <span class="number">0x644d5241</span>;	<span class="comment">/* Magic number, little endian, "ARM\x64" */</span></span><br><span class="line">u32 res5;			<span class="comment">/* reserved (used for PE COFF offset) */</span></span><br></pre></td></tr></table></figure>
-<p>这个头的前两个位置放置的是可执行code</p>
-<p>在开启UEFI支持时, <code>add    x13, x18, #0x16</code>这个code实际上是为了满足EFI格式的”MZ”头. 如果使用UEFI来启动kernel, 会识别出来并走UEFI启动的流程, 如果是普通的启动过程如使用uboot的booti进行引导, 那么第一条指令就是一条dummy指令. 第二条就跳转到<code>stext</code>运行了.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(stext)</span><br><span class="line">	bl	preserve_boot_args</span><br><span class="line">	bl	el2_setup			<span class="comment">// Drop to EL1, w0=cpu_boot_mode</span></span><br><span class="line">	adrp	x23, __PHYS_OFFSET</span><br><span class="line">	<span class="keyword">and</span>	x23, x23, MIN_KIMG_ALIGN - <span class="number">1</span>	<span class="comment">// KASLR offset, defaults to 0</span></span><br><span class="line">	bl	set_cpu_boot_mode_flag</span><br><span class="line">	bl	__create_page_tables</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * The following calls CPU setup code, see arch/arm64/mm/proc.S for</span></span><br><span class="line"><span class="comment">	 * details.</span></span><br><span class="line"><span class="comment">	 * On return, the CPU will be ready for the MMU to be turned on and</span></span><br><span class="line"><span class="comment">	 * the TCR will have been set.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	bl	__cpu_setup			<span class="comment">// initialise processor</span></span><br><span class="line">	b	__primary_switch</span><br><span class="line">ENDPROC(stext)</span><br></pre></td></tr></table></figure>
-<p>这段代码就是内核启动是运行的初始化代码. 后面会分章节来详细描述.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">bayer</a>
         		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
+      		 
         		<li class="article-tag-list-item">
-        			<a href="/categories/linux//" class="article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">image</a>
         		</li>
       		
 		</ul>
 	</div>
 
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析01-内核的入口/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          arm64_linux启动流程分析02_保存启动信息
-        
-      </div>
-    </a>
   
   
-    <a href="/2017/09/01/libuv-源码分析-5-文件操作流程/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">libuv 源码分析(5) - 文件操作流程</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
-  <div id="gitment-ctn"></div> 
-<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
-<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-var gitment = new Gitment({
-  id: 'arm64_linux启动流程分析01_内核的入口',
-  owner: 'gngshn',
-  repo: 'gngshn.github.io',
-  oauth: {
-    client_id: '8402b494ca09d456562d',
-    client_secret: 'b4f32bfb7ae205a1493d6e9881692a7f1ad8fcbf',
-  },
-})
-gitment.render('gitment-ctn')
-</script>
-
-  
+    
 
 
           </div>
@@ -371,9 +238,9 @@ gitment.render('gitment-ctn')
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

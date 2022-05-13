@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://gngshn.github.io">
-  <title>arm64_linux启动流程分析01_内核的入口 | gngshn的博客</title>
+  <title>使用Rust将Bayer图进行demosaic | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
-<meta name="keywords" content="linux,arm64">
+  <meta name="description" content="这是我学习rust之后写的第一个程序，所以记录下，rust和c代码的使用方式还有有非常大的不同，我们不应该用for index的方式来写rust代码。反之使用map/reduce这类函数式的写法会更好一些。不论是性能还是可读性上都更好一些 这里的raw图是2byte一个像素，低12bit有效。raw图前面有128byte的header，我暂时先直接将它略过了，没去解析。由于只是临时写一个工具。所以">
+<meta name="keywords" content="rust,bayer,image">
 <meta property="og:type" content="article">
-<meta property="og:title" content="arm64_linux启动流程分析01_内核的入口">
-<meta property="og:url" content="http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析01-内核的入口/index.html">
+<meta property="og:title" content="使用Rust将Bayer图进行demosaic">
+<meta property="og:url" content="http://gngshn.github.io/2022/05/13/使用Rust将Bayer图进行demosaic/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
+<meta property="og:description" content="这是我学习rust之后写的第一个程序，所以记录下，rust和c代码的使用方式还有有非常大的不同，我们不应该用for index的方式来写rust代码。反之使用map/reduce这类函数式的写法会更好一些。不论是性能还是可读性上都更好一些 这里的raw图是2byte一个像素，低12bit有效。raw图前面有128byte的header，我暂时先直接将它略过了，没去解析。由于只是临时写一个工具。所以">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-04-26T03:37:48.380Z">
+<meta property="og:updated_time" content="2022-05-13T10:49:52.722Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="arm64_linux启动流程分析01_内核的入口">
-<meta name="twitter:description" content="本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析 首先看链接文件如下: 1234567891011ENTRY(_text)SECTIONS&amp;#123;	.....省略部分无关内容....	. = KIMAGE_VADDR + TEXT_OFFSET;	.head.text : &amp;#123;		_text = .;		HEAD_TEXT	&amp;#125;">
+<meta name="twitter:title" content="使用Rust将Bayer图进行demosaic">
+<meta name="twitter:description" content="这是我学习rust之后写的第一个程序，所以记录下，rust和c代码的使用方式还有有非常大的不同，我们不应该用for index的方式来写rust代码。反之使用map/reduce这类函数式的写法会更好一些。不论是性能还是可读性上都更好一些 这里的raw图是2byte一个像素，低12bit有效。raw图前面有128byte的header，我暂时先直接将它略过了，没去解析。由于只是临时写一个工具。所以">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -155,40 +155,31 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-arm64-linux启动流程分析01-内核的入口" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-使用Rust将Bayer图进行demosaic" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      arm64_linux启动流程分析01_内核的入口
+      使用Rust将Bayer图进行demosaic
     </h1>
   
 
         
-        <a href="/2017/11/30/arm64-linux启动流程分析01-内核的入口/" class="archive-article-date">
-  	<time datetime="2017-11-30T03:54:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+        <a href="/2022/05/13/使用Rust将Bayer图进行demosaic/" class="archive-article-date">
+  	<time datetime="2022-05-13T10:42:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本次分析使用的linux内核的版本时 4.14.2, 读者可以自己下载了对照分析</p>
-<p>首先看链接文件如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(_text)</span><br><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	.....省略部分无关内容....</span><br><span class="line"></span><br><span class="line">	. = KIMAGE_VADDR + TEXT_OFFSET;</span><br><span class="line"></span><br><span class="line">	.head.text : &#123;</span><br><span class="line">		_text = .;</span><br><span class="line">		HEAD_TEXT</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+        <p>这是我学习rust之后写的第一个程序，所以记录下，rust和c代码的使用方式还有有非常大的不同，我们不应该用for index的方式来写rust代码。反之使用map/reduce这类函数式的写法会更好一些。不论是性能还是可读性上都更好一些</p>
+<p>这里的raw图是2byte一个像素，低12bit有效。raw图前面有128byte的header，我暂时先直接将它略过了，没去解析。由于只是临时写一个工具。所以没有对error进行很好的处理，一路unwrap()</p>
+<p>Rust的零开销iter抽象还是相当好用的，另外强推下vscode + rust-analyzer作为开发环境，目前看起来是最棒的组合了</p>
 <a id="more"></a>
-<p>可以看到入口点在<code>_text</code>. 而<code>_text</code>是指向<code>.head.text</code>段的起始位置. 所以内核是从<code>.head.text</code>开始运行的. 那么这个段是写什么内容呢?</p>
-<p><code>HEAD_TEXT</code>是一个宏<code>#define HEAD_TEXT  *(.head.text)</code></p>
-<p>在<code>arch/arm64/kernel/head.S</code>中有</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	__HEAD</span><br><span class="line">_head:</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * DO NOT MODIFY. Image header expected by Linux boot-loaders.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_EFI</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * This add instruction has no meaningful effect except that</span></span><br><span class="line"><span class="comment">	 * its opcode forms the magic "MZ" signature required by UEFI.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	add	x13, x18, #<span class="number">0x16</span></span><br><span class="line">	b	stext</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">	b	stext				<span class="comment">// branch to kernel start, magic</span></span><br><span class="line">	.<span class="keyword">long</span>	<span class="number">0</span>				<span class="comment">// reserved</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	...省略后面的内容...</span><br></pre></td></tr></table></figure>
-<p>所以对应到code, 内核是从<code>_head</code>开始运行的. 这个开始点放置了一个arm64 linux的header:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">u32 code0;			<span class="comment">/* Executable code */</span></span><br><span class="line">u32 code1;			<span class="comment">/* Executable code */</span></span><br><span class="line">u64 text_offset;		<span class="comment">/* Image load offset, little endian */</span></span><br><span class="line">u64 image_size;		<span class="comment">/* Effective Image size, little endian */</span></span><br><span class="line">u64 flags;			<span class="comment">/* kernel flags, little endian */</span></span><br><span class="line">u64 res2	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u64 res3	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u64 res4	= <span class="number">0</span>;		<span class="comment">/* reserved */</span></span><br><span class="line">u32 magic	= <span class="number">0x644d5241</span>;	<span class="comment">/* Magic number, little endian, "ARM\x64" */</span></span><br><span class="line">u32 res5;			<span class="comment">/* reserved (used for PE COFF offset) */</span></span><br></pre></td></tr></table></figure>
-<p>这个头的前两个位置放置的是可执行code</p>
-<p>在开启UEFI支持时, <code>add    x13, x18, #0x16</code>这个code实际上是为了满足EFI格式的”MZ”头. 如果使用UEFI来启动kernel, 会识别出来并走UEFI启动的流程, 如果是普通的启动过程如使用uboot的booti进行引导, 那么第一条指令就是一条dummy指令. 第二条就跳转到<code>stext</code>运行了.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(stext)</span><br><span class="line">	bl	preserve_boot_args</span><br><span class="line">	bl	el2_setup			<span class="comment">// Drop to EL1, w0=cpu_boot_mode</span></span><br><span class="line">	adrp	x23, __PHYS_OFFSET</span><br><span class="line">	<span class="keyword">and</span>	x23, x23, MIN_KIMG_ALIGN - <span class="number">1</span>	<span class="comment">// KASLR offset, defaults to 0</span></span><br><span class="line">	bl	set_cpu_boot_mode_flag</span><br><span class="line">	bl	__create_page_tables</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * The following calls CPU setup code, see arch/arm64/mm/proc.S for</span></span><br><span class="line"><span class="comment">	 * details.</span></span><br><span class="line"><span class="comment">	 * On return, the CPU will be ready for the MMU to be turned on and</span></span><br><span class="line"><span class="comment">	 * the TCR will have been set.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	bl	__cpu_setup			<span class="comment">// initialise processor</span></span><br><span class="line">	b	__primary_switch</span><br><span class="line">ENDPROC(stext)</span><br></pre></td></tr></table></figure>
-<p>这段代码就是内核启动是运行的初始化代码. 后面会分章节来详细描述.</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> image::&#123;ImageBuffer, Rgb, RgbImage&#125;;</span><br><span class="line"><span class="keyword">use</span> std::&#123;</span><br><span class="line">    fs::File,</span><br><span class="line">    io::&#123;Cursor, Read, Seek, SeekFrom&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">show_raw8</span></span>(rawfile: &amp;<span class="built_in">str</span>, pngfile: &amp;<span class="built_in">str</span>, w: <span class="built_in">usize</span>, h: <span class="built_in">usize</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> file = File::open(rawfile).unwrap();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> buf = <span class="built_in">Vec</span>::new();</span><br><span class="line">    file.seek(SeekFrom::Start(<span class="number">128</span>)).unwrap();</span><br><span class="line">    file.read_to_end(&amp;<span class="keyword">mut</span> buf).unwrap();</span><br><span class="line">    <span class="keyword">let</span> raw: <span class="built_in">Vec</span>&lt;_&gt; = buf</span><br><span class="line">        .iter()</span><br><span class="line">        .step_by(<span class="number">2</span>)</span><br><span class="line">        .zip(buf.iter().skip(<span class="number">1</span>).step_by(<span class="number">2</span>))</span><br><span class="line">        .map(|(i, j)| *i &gt;&gt; <span class="number">4</span> | *j &lt;&lt; <span class="number">4</span>)</span><br><span class="line">        .collect();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> dst = <span class="built_in">vec!</span>[<span class="number">0u8</span>; w * h * <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> rgb = bayer::RasterMut::new(w, h, bayer::RasterDepth::Depth8, &amp;<span class="keyword">mut</span> dst);</span><br><span class="line"></span><br><span class="line">    bayer::run_demosaic(</span><br><span class="line">        &amp;<span class="keyword">mut</span> Cursor::new(&amp;raw[..]),</span><br><span class="line">        bayer::BayerDepth::Depth8,</span><br><span class="line">        bayer::CFA::GRBG,</span><br><span class="line">        bayer::Demosaic::Cubic,</span><br><span class="line">        &amp;<span class="keyword">mut</span> rgb,</span><br><span class="line">    )</span><br><span class="line">    .unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> img = RgbImage::from_raw(w <span class="keyword">as</span> <span class="built_in">u32</span>, h <span class="keyword">as</span> <span class="built_in">u32</span>, dst).unwrap();</span><br><span class="line">    img.save(pngfile).unwrap();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">show_raw16</span></span>(filename: &amp;<span class="built_in">str</span>, pngfile: &amp;<span class="built_in">str</span>, w: <span class="built_in">usize</span>, h: <span class="built_in">usize</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> file = File::open(filename).unwrap();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> buf = <span class="built_in">Vec</span>::new();</span><br><span class="line">    file.seek(SeekFrom::Start(<span class="number">128</span>)).unwrap();</span><br><span class="line">    file.read_to_end(&amp;<span class="keyword">mut</span> buf).unwrap();</span><br><span class="line">    buf.iter_mut().fold(<span class="number">0</span>, |acc, v| &#123;</span><br><span class="line">        <span class="keyword">let</span> t = *v &gt;&gt; <span class="number">4</span>;</span><br><span class="line">        *v = *v &lt;&lt; <span class="number">4</span> | acc;</span><br><span class="line">        t</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> dst = <span class="built_in">vec!</span>[<span class="number">0u8</span>; w * h * <span class="number">3</span> * <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> rgb = bayer::RasterMut::new(w, h, bayer::RasterDepth::Depth16, &amp;<span class="keyword">mut</span> dst);</span><br><span class="line"></span><br><span class="line">    bayer::run_demosaic(</span><br><span class="line">        &amp;<span class="keyword">mut</span> Cursor::new(&amp;buf[..]),</span><br><span class="line">        bayer::BayerDepth::Depth16LE,</span><br><span class="line">        bayer::CFA::GRBG,</span><br><span class="line">        bayer::Demosaic::Cubic,</span><br><span class="line">        &amp;<span class="keyword">mut</span> rgb,</span><br><span class="line">    )</span><br><span class="line">    .unwrap();</span><br><span class="line">    <span class="keyword">let</span> dst: <span class="built_in">Vec</span>&lt;_&gt; = dst</span><br><span class="line">        .iter()</span><br><span class="line">        .step_by(<span class="number">2</span>)</span><br><span class="line">        .zip(dst.iter().skip(<span class="number">1</span>).step_by(<span class="number">2</span>))</span><br><span class="line">        .map(|(i, j)| (*i <span class="keyword">as</span> <span class="built_in">u16</span>) | (*j <span class="keyword">as</span> <span class="built_in">u16</span>) &lt;&lt; <span class="number">8</span>)</span><br><span class="line">        .collect();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> img = ImageBuffer::&lt;Rgb&lt;<span class="built_in">u16</span>&gt;, <span class="built_in">Vec</span>&lt;<span class="built_in">u16</span>&gt;&gt;::from_raw(w <span class="keyword">as</span> <span class="built_in">u32</span>, h <span class="keyword">as</span> <span class="built_in">u32</span>, dst).unwrap();</span><br><span class="line">    img.save(pngfile).unwrap();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -202,28 +193,21 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">bayer</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">image</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux//" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
 
@@ -273,7 +257,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://gngshn.github.io/2017/11/30/arm64-linux启动流程分析01-内核的入口/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://gngshn.github.io/2022/05/13/使用Rust将Bayer图进行demosaic/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -287,18 +271,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          arm64_linux启动流程分析02_保存启动信息
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/09/01/libuv-源码分析-5-文件操作流程/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">libuv 源码分析(5) - 文件操作流程</div>
+    <a href="/2022/05/09/ARMv8-memory-model/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ARMv8 memory model</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -337,7 +312,7 @@
 <script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: 'arm64_linux启动流程分析01_内核的入口',
+  id: '使用Rust将Bayer图进行demosaic',
   owner: 'gngshn',
   repo: 'gngshn.github.io',
   oauth: {

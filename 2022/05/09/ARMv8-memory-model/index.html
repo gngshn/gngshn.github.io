@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="gngshn的博客">
 <meta property="og:description" content="在这边文章中, 我将以一个程序员的视角来谈一下我对ARMv8-A中的memory model的理解. 涉及到domain, atomic, ordering等. 如有错误请指正. 我会首先贴出ARM的官方描述, 然后在后面简要的描述一下我自己的理解. 部分章节或内容细节省略掉了.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-05-09T12:07:23.429Z">
+<meta property="og:updated_time" content="2022-05-13T10:41:31.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ARMv8 memory model">
 <meta name="twitter:description" content="在这边文章中, 我将以一个程序员的视角来谈一下我对ARMv8-A中的memory model的理解. 涉及到domain, atomic, ordering等. 如有错误请指正. 我会首先贴出ARM的官方描述, 然后在后面简要的描述一下我自己的理解. 部分章节或内容细节省略掉了.">
@@ -220,6 +220,7 @@
 <p>multi-copy atomicity描述的是多个PE(Processing Element, 可以认为是一个cpu core)的atomic, 个人理解, 这里的multi-copy可以认为是多个PE都可能有同一个location的副本(copy, 我觉得可以看做cache), 他们之间存在observed-by的关系. multi-copy atomic要求: 所有的observers对同一个location发起的写必须是完全顺序的, 每一笔写都<strong>可以</strong>被所有的observer观察到(当然observer不一定会去实际观察, 因此observer可能不会观察到所有的写, 但是观察到的写的顺序一定是一致的, 比如A, B, C, D四个写, Observer1观察到了A, C, D, Observer2观察到了B, D, Observer3观察到了A, C). 并且写指令在所有观察者可以观察到这个写之前是不能返回的. 另外这里的观察到可以见后面的observed-by详细描述.</p>
 <p>从硬件上来看, 我觉得可以这样来理解, 在多核系统上, 多个observer都有自己的cache, 他们可以通过一定的cache总线和协议(如CCI和MOESI)来维护cache一致性. 对于multi-copy atomicity来说, 当一个observer对一个location发起写操作时, 其他的observer上的对应cache条目需要被invalid/update(相当于观察到了这笔写)后才算这笔写完成(指令才能返回). 因此multi-copy atomicity是一个很高的原子要求. 写会变得很慢.</p>
 <p>因此, arm的memory model不是使用的multi-copy atomicity, 而是使用的other-multi-copy aomicity. 这个后续会讲到.</p>
+<p>但是这里要再多讲一句，ARM所说的multi-copy atomic和其他架构说的不是一回事，ARM的other-multi-copy atomic和我们常说的multi-copy atomic其实是一回事</p>
 </li>
 <li><h2 id="Requirements-for-multi-copy-atomicity"><a href="#Requirements-for-multi-copy-atomicity" class="headerlink" title="Requirements for multi-copy atomicity"></a>Requirements for multi-copy atomicity</h2><p>For Normal memory, writes are not required to be multi-copy atomic.</p>
 <p>For Device memory, writes are not required to be multi-copy atomic.</p>
@@ -546,6 +547,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2022/05/13/使用Rust将Bayer图进行demosaic/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          使用Rust将Bayer图进行demosaic
+        
+      </div>
+    </a>
+  
   
     <a href="/2022/04/26/使用vscode和qemu调试linux内核（包含汇编）/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">使用vscode和qemu调试linux内核（包含汇编）</div>
@@ -703,11 +713,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -719,6 +729,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rust</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bayer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">vscode</a>
               </li>
              
@@ -727,19 +749,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">arm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">numpy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">arm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
               </li>
             
             <div class="clearfix"></div>

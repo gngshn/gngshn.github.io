@@ -156,6 +156,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-arm64-linux启动流程分析02-保存启动信息" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/">arm64_linux启动流程分析02_保存启动信息</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/" class="archive-article-date">
+  	<time datetime="2017-11-30T04:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>解上节, 我们先来看看<code>bl    preserve_boot_args</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">preserve_boot_args:</span><br><span class="line">	mov	x21, x0				// x21=FDT</span><br><span class="line"></span><br><span class="line">	adr_l	x0, boot_args			// record the contents of</span><br><span class="line">	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry</span><br><span class="line">	stp	x2, x3, [x0, #16]</span><br><span class="line"></span><br><span class="line">	dmb	sy				// needed before dc ivac with</span><br><span class="line">						// MMU off</span><br><span class="line"></span><br><span class="line">	mov	x1, #0x20			// 4 x 8 bytes</span><br><span class="line">	b	__inval_dcache_area		// tail call</span><br><span class="line">ENDPROC(preserve_boot_args)</span><br></pre></td></tr></table></figure></p>
+        
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">arm64</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/linux//" class="article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/11/30/arm64-linux启动流程分析02-保存启动信息/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-arm64-linux启动流程分析01-内核的入口" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -269,7 +360,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#x67;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#x67;&#110;&#x67;&#115;&#104;&#110;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;" target="_blank" rel="noopener">&#x67;&#110;&#x67;&#115;&#104;&#110;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
 <p>上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.<br>先来看一段libuv文件操作的代码<br>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-5-文件操作流程/#more">more >></a>
@@ -357,7 +448,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#103;&#110;&#103;&#115;&#104;&#x6e;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#103;&#110;&#103;&#115;&#104;&#x6e;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
 <p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UV_EXTERN <span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">uv_work_t</span>* req,</span></span></span><br><span class="line"><span class="function"><span class="params">                            uv_work_cb work_cb,</span></span></span><br><span class="line"><span class="function"><span class="params">                            uv_after_work_cb after_work_cb)</span></span>;</span><br></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/#more">more >></a>
@@ -445,7 +536,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#109;" target="_blank" rel="noopener">&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#109;</a></p>
+        <p>by gngshn <a href="mailto:&#103;&#110;&#103;&#x73;&#x68;&#x6e;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;" target="_blank" rel="noopener">&#103;&#110;&#103;&#x73;&#x68;&#x6e;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;</a></p>
 <p>上一篇, 我们将到libuv的event loop过程, 其中留了个悬念, 下面我们来解除这个悬念, 直接上函数, 这个函数特别长, 我们依旧直接在函数里面写注释把~<br>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-3-poll过程/#more">more >></a>
@@ -533,7 +624,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#x67;&#110;&#x67;&#115;&#x68;&#110;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;" target="_blank" rel="noopener">&#x67;&#110;&#x67;&#115;&#x68;&#110;&#64;&#x67;&#109;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#x67;&#x6e;&#103;&#115;&#x68;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#x67;&#x6e;&#103;&#115;&#x68;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;</a></p>
 <p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="noopener">libuv design overview</a><br>event loop的流程图如下<br>
         
           <a class="article-more-a" href="/2017/09/01/libuv-源码分析-2-event-loop的运转/#more">more >></a>
@@ -621,7 +712,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#x73;&#x68;&#x6e;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#46;&#99;&#x6f;&#x6d;" target="_blank" rel="noopener">&#x67;&#x6e;&#x67;&#x73;&#x68;&#x6e;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#46;&#99;&#x6f;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#x67;&#x6e;&#103;&#x73;&#x68;&#110;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#109;" target="_blank" rel="noopener">&#x67;&#x6e;&#103;&#x73;&#x68;&#110;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#109;</a></p>
 <p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
 <p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.<br>
         
@@ -951,93 +1042,6 @@
 
 
   
-    <article id="post-使用docker来构建嵌入式开发环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/15/使用docker来构建嵌入式开发环境/">使用docker来构建嵌入式开发环境</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/15/使用docker来构建嵌入式开发环境/" class="archive-article-date">
-  	<time datetime="2017-04-15T08:54:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.<br>比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora 25上编译SDK.<br>
-        
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/linux//" class="article-tag-list-link color1">linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/15/使用docker来构建嵌入式开发环境/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1147,11 +1151,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1163,6 +1167,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rust</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bayer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">vscode</a>
               </li>
              
@@ -1171,19 +1187,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">arm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">numpy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">arm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
               </li>
             
             <div class="clearfix"></div>

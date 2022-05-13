@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://gngshn.github.io">
   <title>libuv 源码分析(4) - libuv的工作队列(线程池) | gngshn的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_loo">
+  <meta name="description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#104;&amp;#x6e;&amp;#x40;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_l">
 <meta name="keywords" content="libuv">
 <meta property="og:type" content="article">
 <meta property="og:title" content="libuv 源码分析(4) - libuv的工作队列(线程池)">
 <meta property="og:url" content="http://gngshn.github.io/2017/09/01/libuv-源码分析-4-libuv的工作队列-线程池/index.html">
 <meta property="og:site_name" content="gngshn的博客">
-<meta property="og:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_loo">
+<meta property="og:description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#104;&amp;#x6e;&amp;#x40;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_l">
 <meta property="og:locale" content="default">
 <meta property="og:updated_time" content="2022-04-26T03:37:48.380Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="libuv 源码分析(4) - libuv的工作队列(线程池)">
-<meta name="twitter:description" content="by gngshn &amp;#x67;&amp;#110;&amp;#x67;&amp;#x73;&amp;#x68;&amp;#110;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_loo">
+<meta name="twitter:description" content="by gngshn &amp;#103;&amp;#110;&amp;#103;&amp;#115;&amp;#104;&amp;#x6e;&amp;#x40;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#x6d; libuv通过uv_work_queue来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:1234UV_EXTERN int uv_queue_work(uv_l">
   
     <link rel="alternative" href="/atom.xml" title="gngshn的博客" type="application/atom+xml">
   
@@ -175,7 +175,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>by gngshn <a href="mailto:&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#x67;&#110;&#x67;&#x73;&#x68;&#110;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+        <p>by gngshn <a href="mailto:&#103;&#110;&#103;&#115;&#104;&#x6e;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;" target="_blank" rel="noopener">&#103;&#110;&#103;&#115;&#104;&#x6e;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
 <p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">UV_EXTERN <span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></span><br><span class="line"><span class="function"><span class="params">                            <span class="keyword">uv_work_t</span>* req,</span></span></span><br><span class="line"><span class="function"><span class="params">                            uv_work_cb work_cb,</span></span></span><br><span class="line"><span class="function"><span class="params">                            uv_after_work_cb after_work_cb)</span></span>;</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
 <p>这个工作队列实现方式就是把任务(work_cb)交给线程池来处理, 并且任务完成后, 调用相应的回调函数(after_work_cb).<br><br>我们先来看看这个函数的实现:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uv_queue_work</span><span class="params">(<span class="keyword">uv_loop_t</span>* loop,</span></span></span><br><span class="line"><span class="function"><span class="params">                  <span class="keyword">uv_work_t</span>* req,</span></span></span><br><span class="line"><span class="function"><span class="params">                  uv_work_cb work_cb,</span></span></span><br><span class="line"><span class="function"><span class="params">                  uv_after_work_cb after_work_cb)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (work_cb == <span class="literal">NULL</span>)</span><br><span class="line">    <span class="keyword">return</span> UV_EINVAL;</span><br><span class="line"></span><br><span class="line">  uv__req_init(loop, req, UV_WORK);</span><br><span class="line">  req-&gt;loop = loop;</span><br><span class="line">  req-&gt;work_cb = work_cb;</span><br><span class="line">  req-&gt;after_work_cb = after_work_cb;</span><br><span class="line">  uv__work_submit(loop, &amp;req-&gt;work_req, uv__queue_work, uv__queue_done);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -449,11 +449,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -465,6 +465,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rust</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">bayer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">vscode</a>
               </li>
              
@@ -473,19 +485,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">arm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">numpy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">arm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">armv8</a>
               </li>
             
             <div class="clearfix"></div>
