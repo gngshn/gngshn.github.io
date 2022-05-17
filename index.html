@@ -156,19 +156,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-使用Rust将Bayer图进行demosaic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-使用Rust转换bayer和yuv图像" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/05/13/使用Rust将Bayer图进行demosaic/">使用Rust将Bayer图进行demosaic</a>
+      <a class="article-title" href="/2022/05/13/使用Rust转换bayer和yuv图像/">使用Rust转换bayer和yuv图像</a>
     </h1>
   
 
         
-        <a href="/2022/05/13/使用Rust将Bayer图进行demosaic/" class="archive-article-date">
+        <a href="/2022/05/13/使用Rust转换bayer和yuv图像/" class="archive-article-date">
   	<time datetime="2022-05-13T10:42:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-05-13</time>
 </a>
         
@@ -180,7 +180,7 @@
 <p>这里的raw图是2byte一个像素，低12bit有效。raw图前面有128byte的header，我暂时先直接将它略过了，没去解析。由于只是临时写一个工具。所以没有对error进行很好的处理，一路unwrap()</p>
 <p>Rust的零开销iter抽象还是相当好用的，另外强推下vscode + rust-analyzer作为开发环境，目前看起来是最棒的组合了</p>
         
-          <a class="article-more-a" href="/2022/05/13/使用Rust将Bayer图进行demosaic/#more">more >></a>
+          <a class="article-more-a" href="/2022/05/13/使用Rust转换bayer和yuv图像/#more">more >></a>
         
       
 
@@ -204,6 +204,10 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">image</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">yuv</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -212,7 +216,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/05/13/使用Rust将Bayer图进行demosaic/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/05/13/使用Rust转换bayer和yuv图像/">展开全文 >></a>
         </p>
       
 
@@ -1155,11 +1159,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">mmap</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,7 +1171,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color5">mmap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1176,6 +1180,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">arm64</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">numpy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1199,11 +1211,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">numpy</a>
+                <a href="javascript:void(0)" class="js-tag color4">yuv</a>
               </li>
              
               <li class="article-tag-list-item">
