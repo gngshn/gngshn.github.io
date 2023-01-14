@@ -128,13 +128,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -164,6 +164,100 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/" class="post-title-link" itemprop="url">arm64_linux启动流程分析04_KASLR</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-30 12:00:19" itemprop="dateCreated datePublished" datetime="2017-11-30T12:00:19+08:00">2017-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>这篇内容主要是说一下KASLR</p>
+<p>KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|               |       |             |</span><br><span class="line">| <span class="number">2</span>M align resv | KASLR | TEXT_OFFSET | KERNEL IMAGE</span><br><span class="line">|               |       |             |</span><br><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|                       |             |</span><br><span class="line">|                       |             +----内核在DDR中的位置.</span><br><span class="line">|                       +----------------- ARM64规定的KERNEL运行前必须放在 <span class="number">2</span>M对齐地址+TEXT_OFFSET 的地方</span><br><span class="line">|                                          这里是经过KASLR技术relocate之后的位置.</span><br><span class="line">+----------------------------------------- DDR起始地址.</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -209,7 +303,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -302,7 +396,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -395,7 +489,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -489,7 +583,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -511,7 +605,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;">&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#x67;&#110;&#103;&#115;&#104;&#x6e;&#64;&#103;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;">&#x67;&#110;&#103;&#115;&#104;&#x6e;&#64;&#103;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
 <p>上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.<br>先来看一段libuv文件操作的代码</p>
           <!--noindex-->
             <div class="post-button">
@@ -582,7 +676,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -604,7 +698,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#103;&#x6e;&#103;&#115;&#104;&#110;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#103;&#x6e;&#103;&#115;&#104;&#110;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#x6e;&#x67;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;">&#103;&#x6e;&#x67;&#115;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;</a></p>
 <p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UV_EXTERN <span class="type">int</span> <span class="title function_">uv_queue_work</span><span class="params">(<span class="type">uv_loop_t</span>* loop,</span></span><br><span class="line"><span class="params">                            <span class="type">uv_work_t</span>* req,</span></span><br><span class="line"><span class="params">                            uv_work_cb work_cb,</span></span><br><span class="line"><span class="params">                            uv_after_work_cb after_work_cb)</span>;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
@@ -676,7 +770,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -698,7 +792,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#x73;&#104;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;">&#x67;&#x6e;&#x67;&#x73;&#104;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
+          <p>by gngshn <a href="mailto:&#x67;&#110;&#103;&#x73;&#104;&#110;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">&#x67;&#110;&#103;&#x73;&#104;&#110;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#111;&#109;</a></p>
 <p>上一篇, 我们将到libuv的event loop过程, 其中留了个悬念, 下面我们来解除这个悬念, 直接上函数, 这个函数特别长, 我们依旧直接在函数里面写注释把~</p>
           <!--noindex-->
             <div class="post-button">
@@ -769,7 +863,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -791,7 +885,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;">&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#x40;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;">&#103;&#110;&#x67;&#x73;&#104;&#x6e;&#x40;&#103;&#x6d;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;</a></p>
 <p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a target="_blank" rel="noopener" href="http://docs.libuv.org/en/v1.x/design.html">libuv design overview</a><br>event loop的流程图如下</p>
           <!--noindex-->
             <div class="post-button">
@@ -862,7 +956,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -884,7 +978,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#x67;&#110;&#103;&#115;&#104;&#110;&#64;&#x67;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#111;&#109;">&#x67;&#110;&#103;&#115;&#104;&#110;&#64;&#x67;&#x6d;&#97;&#105;&#x6c;&#46;&#99;&#111;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#x67;&#110;&#103;&#x73;&#x68;&#110;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#109;">&#x67;&#110;&#103;&#x73;&#x68;&#110;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#x63;&#x6f;&#109;</a></p>
 <p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
 <p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.</p>
           <!--noindex-->
@@ -956,7 +1050,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-15 00:31:57" itemprop="dateModified" datetime="2023-01-15T00:31:57+08:00">2023-01-15</time>
     </span>
 
   
@@ -971,98 +1065,6 @@
     <div class="post-body" itemprop="articleBody">
           <p>之前一直不喜欢类似csdn一类的网站来写博客, 自己搭wordpress有太麻烦, 现在使用github page正式开启自己的博客之旅.<br>这里主要会记录一些自己遇到的坑和一些学习的见解, 希望自己能坚持下去.</p>
 
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://gngshn.github.io/2017/04/15/mmap%E8%AF%BB%E5%86%99%E5%AF%84%E5%AD%98%E5%99%A8%E5%BA%94%E6%B3%A8%E6%84%8F%E4%B8%8D%E8%A6%81%E8%B6%8A%E7%95%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="gngshn">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gngshn的博客">
-      <meta itemprop="description" content="linux程序员一枚">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | gngshn的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/04/15/mmap%E8%AF%BB%E5%86%99%E5%AF%84%E5%AD%98%E5%99%A8%E5%BA%94%E6%B3%A8%E6%84%8F%E4%B8%8D%E8%A6%81%E8%B6%8A%E7%95%8C/" class="post-title-link" itemprop="url">mmap读写寄存器应注意不要越界</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-04-15 16:56:12" itemprop="dateCreated datePublished" datetime="2017-04-15T16:56:12+08:00">2017-04-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>前两天使用&#x2F;dev&#x2F;mem来修改寄存器时遇到了一个问题. 当时的情况是这样的:<br>我有8K的寄存器空间需要访问, 但是当时我将mmap的空间大小写小了, 只写了1K, 相当于只映射了4K的空间. 但是当我操作到4K-8K的空间的时候, 读写看起来都没有问题, 读回来的数据和写入的数据是一致的. 但是实际寄存器上好像没有感受到一样(没有写入寄存器应有的现象), 刚开始一致怀疑是fpga的bitfile有问题. 后来无意发现了mmap指定的size不对, 改好了就可以了.<br>那么这里有一个问题, 为什么访问4K-8K的空间没有发生segment fault呢?</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/04/15/mmap%E8%AF%BB%E5%86%99%E5%AF%84%E5%AD%98%E5%99%A8%E5%BA%94%E6%B3%A8%E6%84%8F%E4%B8%8D%E8%A6%81%E8%B6%8A%E7%95%8C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
