@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -139,7 +139,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -164,6 +164,84 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://gngshn.github.io/2023/01/14/risc-v-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%901-%E7%89%B9%E6%80%A7%E6%8F%8F%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/01/14/risc-v-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%901-%E7%89%B9%E6%80%A7%E6%8F%8F%E8%BF%B0/" class="post-title-link" itemprop="url">risc-v linux启动流程分析1-特性描述</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-01-14 19:32:55 / 修改时间：22:22:09" itemprop="dateCreated datePublished" datetime="2023-01-14T19:32:55+08:00">2023-01-14</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>现在RISC-V在芯片厂已经开始有一定的部署了, 从MCU级别的微控制处理器到AP CPU级别SoC都有进行一些设计或量产. 从芯片开发成本来看, RISC-V是一个非常适合用来实现减少授权费和版税的in-house CPU的指令集. 因为RISC-V指令集目前已经形成的一定生态并且有越来越好的趋势, 对于实现RISC-V的CPU, 可以直接免费使用基于这个指令集的开源生态, 如GCC, LLVM等.</p>
+<p>虽然目前RISC-V指令集在实现AP CPU时还有一些扩展指令集正在准备或刚刚准备好, 但是RISC-V linux确实已经可以正常跑起来了. 我们就来以RISC-V 32来分析下Linux的启动过程, 我们主要分析在start_kernel之前的流程, 我们使用的linux版本时linux-6.2-rc3, 配置采用的时linux mainline上面的rv32_defconfig.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/01/14/risc-v-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%901-%E7%89%B9%E6%80%A7%E6%8F%8F%E8%BF%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -209,7 +287,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
 
   
@@ -294,7 +372,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
 
   
@@ -378,7 +456,16 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
     </span>
 
   
@@ -464,7 +551,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -557,7 +644,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -650,7 +737,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -742,7 +829,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -834,7 +921,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -928,7 +1015,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
+      <time title="修改时间：2023-01-14 22:22:09" itemprop="dateModified" datetime="2023-01-14T22:22:09+08:00">2023-01-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -956,99 +1043,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="gngshn">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gngshn的博客">
-      <meta itemprop="description" content="linux程序员一枚">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | gngshn的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/" class="post-title-link" itemprop="url">arm64_linux启动流程分析03_设定当前core的启动状态</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-11-30 12:00:11" itemprop="dateCreated datePublished" datetime="2017-11-30T12:00:11+08:00">2017-11-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-14 19:25:55" itemprop="dateModified" datetime="2023-01-14T19:25:55+08:00">2023-01-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>接下来看<code>el2_setup</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(el2_setup)</span><br><span class="line">	msr	SPsel, #<span class="number">1</span>			<span class="comment">// We want to use SP_EL&#123;1,2&#125;</span></span><br><span class="line">	mrs	x0, CurrentEL</span><br><span class="line">	cmp	x0, #CurrentEL_EL2</span><br><span class="line">	b.eq	<span class="number">1f</span></span><br><span class="line">	mrs	x0, sctlr_el1</span><br><span class="line"><span class="title function_">CPU_BE</span><span class="params">(	orr	x0, x0, #(<span class="number">3</span> &lt;&lt; <span class="number">24</span>)	)</span>	<span class="comment">// Set the EE and E0E bits for EL1</span></span><br><span class="line"><span class="title function_">CPU_LE</span><span class="params">(	bic	x0, x0, #(<span class="number">3</span> &lt;&lt; <span class="number">24</span>)	)</span>	<span class="comment">// Clear the EE and E0E bits for EL1</span></span><br><span class="line">	msr	sctlr_el1, x0</span><br><span class="line">	mov	w0, #BOOT_CPU_MODE_EL1		<span class="comment">// This cpu booted in EL1</span></span><br><span class="line">	isb</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">1:	mrs	x0, sctlr_el2</span><br><span class="line">......省略......</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

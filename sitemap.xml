@@ -2,6 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9001-%E5%86%85%E6%A0%B8%E7%9A%84%E5%85%A5%E5%8F%A3/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9002-%E4%BF%9D%E5%AD%98%E5%90%AF%E5%8A%A8%E4%BF%A1%E6%81%AF/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9005-%E9%85%8D%E7%BD%AE%E5%86%85%E6%A0%B8%E5%90%AF%E5%8A%A8%E7%9A%84%E4%B8%B4%E6%97%B6%E9%A1%B5%E8%A1%A8/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9006-CPU%E7%9A%84%E4%B8%80%E4%BA%9B%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9007-%E5%BC%80%E5%90%AFMMU%E5%88%87%E6%8D%A2%E5%88%B0%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9008-%E6%AD%A3%E5%BC%8F%E8%B7%B3%E5%85%A5%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E6%AE%B5%E8%BF%90%E8%A1%8C/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://gngshn.github.io/2018/01/19/%E5%88%A9%E7%94%A8numpy%E7%9A%84%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BD%AC%E6%8D%A2%E7%9F%A9%E9%98%B5%E7%9A%84YCbCr2RGB%E5%B7%A5%E5%85%B7/</loc>
     
     <lastmod>2023-01-14</lastmod>
@@ -30,6 +102,15 @@
   
   <url>
     <loc>http://gngshn.github.io/2022/05/13/%E4%BD%BF%E7%94%A8Rust%E8%BD%AC%E6%8D%A2bayer%E5%92%8Cyuv%E5%9B%BE%E5%83%8F/</loc>
+    
+    <lastmod>2023-01-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/2023/01/14/risc-v-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%901-%E7%89%B9%E6%80%A7%E6%8F%8F%E8%BF%B0/</loc>
     
     <lastmod>2023-01-14</lastmod>
     
@@ -138,78 +219,6 @@
   
   <url>
     <loc>http://gngshn.github.io/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-5-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9001-%E5%86%85%E6%A0%B8%E7%9A%84%E5%85%A5%E5%8F%A3/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9002-%E4%BF%9D%E5%AD%98%E5%90%AF%E5%8A%A8%E4%BF%A1%E6%81%AF/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9005-%E9%85%8D%E7%BD%AE%E5%86%85%E6%A0%B8%E5%90%AF%E5%8A%A8%E7%9A%84%E4%B8%B4%E6%97%B6%E9%A1%B5%E8%A1%A8/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9006-CPU%E7%9A%84%E4%B8%80%E4%BA%9B%E5%88%9D%E5%A7%8B%E5%8C%96/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9007-%E5%BC%80%E5%90%AFMMU%E5%88%87%E6%8D%A2%E5%88%B0%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80/</loc>
-    
-    <lastmod>2023-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://gngshn.github.io/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9008-%E6%AD%A3%E5%BC%8F%E8%B7%B3%E5%85%A5%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E6%AE%B5%E8%BF%90%E8%A1%8C/</loc>
     
     <lastmod>2023-01-14</lastmod>
     
@@ -340,6 +349,13 @@
   
   <url>
     <loc>http://gngshn.github.io/tags/yuv/</loc>
+    <lastmod>2023-01-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://gngshn.github.io/tags/risc-v/</loc>
     <lastmod>2023-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
