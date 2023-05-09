@@ -15,10 +15,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"gngshn.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.14.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"gngshn.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.16.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora">
 <meta property="og:type" content="article">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2017-04-15T08:54:11.000Z">
-<meta property="article:modified_time" content="2023-01-20T08:13:37.769Z">
+<meta property="article:modified_time" content="2023-05-09T01:10:43.204Z">
 <meta property="article:author" content="gngshn">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
@@ -49,9 +49,7 @@
 
 
 
-  <script async defer data-website-id="" src=""></script>
 
-  <script defer data-domain="" src=""></script>
 
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -239,7 +237,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-01-20 16:13:37" itemprop="dateModified" datetime="2023-01-20T16:13:37+08:00">2023-01-20</time>
+      <time title="修改时间：2023-05-09 09:10:43" itemprop="dateModified" datetime="2023-05-09T09:10:43+08:00">2023-05-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -260,8 +258,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <p>我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.<br>比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora 25上编译SDK.</p>
+    <div class="post-body" itemprop="articleBody"><p>我目前使用的一套嵌入式开发SDK是在ubuntu 14.04上构建的, 对于较新的ubuntu发行版或其他linux发行版是不能兼容的.<br>比如目前我使用的是Fedora 25作为自己的系统, 那么要编译SDK会发生错误. 主要是libtools, autoconf等工具的兼容性问题. 为了解决这个问题可以使用docker来构建一套基于ubuntu14.04文件系统的编译系统, 从而实现在Fedora 25上编译SDK.</p>
 <span id="more"></span>
 <p>首先贴上自己的Dockerfile</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># rsdk builder docker</span><br><span class="line"># creater by gngshn</span><br><span class="line"># Jan 20 2017</span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">ENV TERM=xterm</span><br><span class="line">RUN echo &quot;dash dash/sh boolean false&quot; | debconf-set-selections \</span><br><span class="line">    &amp;&amp; dpkg-reconfigure -p critical dash \</span><br><span class="line">    &amp;&amp; apt-get update \</span><br><span class="line">    &amp;&amp; apt-get install -y bc python dpkg lzma pkg-config libncurses5-dev \</span><br><span class="line">       autoconf automake cmake libtool gettext texinfo gawk \</span><br><span class="line">    &amp;&amp; dpkg --add-architecture i386 \</span><br><span class="line">    &amp;&amp; apt-get update \</span><br><span class="line">    &amp;&amp; apt-get install -y gcc-multilib lib32z1-dev lib32ncurses5-dev \</span><br><span class="line">    &amp;&amp; apt-get clean \</span><br><span class="line">    &amp;&amp; groupadd -g 1000 gngshn \</span><br><span class="line">    &amp;&amp; useradd -u 1000 -g 1000 -G sudo -m gngshn \</span><br><span class="line">    &amp;&amp; mkdir /home/gngshn/ipcam \</span><br><span class="line">    &amp;&amp; chown gngshn:gngshn /home/gngshn/ipcam \</span><br><span class="line">    &amp;&amp; echo &quot;root:xx&quot; | chpasswd \</span><br><span class="line">    &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br><span class="line">USER gngshn</span><br><span class="line">WORKDIR /home/gngshn</span><br><span class="line">ENV TERM=xterm-256color \</span><br><span class="line">    TERMINFO=/lib/terminfo</span><br></pre></td></tr></table></figure>
@@ -345,6 +342,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
 <script src="/js/third-party/search/local-search.js"></script>
+
 
 
 
