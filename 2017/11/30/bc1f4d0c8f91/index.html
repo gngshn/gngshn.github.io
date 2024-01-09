@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.gngshn.com","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇内容讲讲页表的配置, 为了kernel运行速度加快, 我们需要启动cache, 启动cache需要先启动MMU让CPU运行到虚拟地址上, 那么我们就需要启动一个能覆盖KERNEL内存区域的页表. 本篇内容假设在您对MMU有一定的了解的基础上来讲述的. 我们假设使用4K页来管理内存, 同时虚拟地址使用48位地址">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析05_配置内核启动的临时页表">
+<meta property="og:url" content="https://blog.gngshn.com/2017/11/30/bc1f4d0c8f91/index.html">
+<meta property="og:site_name" content="gngshn的博客">
+<meta property="og:description" content="这篇内容讲讲页表的配置, 为了kernel运行速度加快, 我们需要启动cache, 启动cache需要先启动MMU让CPU运行到虚拟地址上, 那么我们就需要启动一个能覆盖KERNEL内存区域的页表. 本篇内容假设在您对MMU有一定的了解的基础上来讲述的. 我们假设使用4K页来管理内存, 同时虚拟地址使用48位地址">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-30T04:00:28.000Z">
+<meta property="article:modified_time" content="2024-01-09T09:20:11.304Z">
+<meta property="article:author" content="gngshn">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="arm64">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.gngshn.com/2017/11/30/bc1f4d0c8f91/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.gngshn.com/2017/11/30/bc1f4d0c8f91/","path":"2017/11/30/bc1f4d0c8f91/","title":"arm64_linux启动流程分析05_配置内核启动的临时页表"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>arm64_linux启动流程分析05_配置内核启动的临时页表 | gngshn的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">gngshn的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">专注, 平静</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gngshn"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">gngshn</p>
+  <div class="site-description" itemprop="description">linux程序员一枚</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/gngshn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;gngshn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:gngshn@gmail.com" title="E-Mail → mailto:gngshn@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/bc1f4d0c8f91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="arm64_linux启动流程分析05_配置内核启动的临时页表 | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          arm64_linux启动流程分析05_配置内核启动的临时页表
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-30 12:00:28" itemprop="dateCreated datePublished" datetime="2017-11-30T12:00:28+08:00">2017-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/arm/" itemprop="url" rel="index"><span itemprop="name">arm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇内容讲讲页表的配置, 为了kernel运行速度加快, 我们需要启动cache, 启动cache需要先启动MMU让CPU运行到虚拟地址上, 那么我们就需要启动一个能覆盖KERNEL内存区域的页表.</p>
+<p>本篇内容假设在您对MMU有一定的了解的基础上来讲述的.</p>
+<p>我们假设使用4K页来管理内存, 同时虚拟地址使用48位地址</p>
+<span id="more"></span>
+
+<p>我们将<code>__create_page_tables</code>函数分成几段来讲解</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">__create_page_tables:</span><br><span class="line">	mov	x28, lr</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * Invalidate the idmap and swapper page tables to avoid potential</span></span><br><span class="line"><span class="comment">	 * dirty cache lines being evicted.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	adrp	x0, idmap_pg_dir</span><br><span class="line">	ldr	x1, =(IDMAP_DIR_SIZE + SWAPPER_DIR_SIZE + RESERVED_TTBR0_SIZE)</span><br><span class="line">	bl	__inval_dcache_area</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * Clear the idmap and swapper page tables.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	adrp	x0, idmap_pg_dir</span><br><span class="line">	ldr	x1, =(IDMAP_DIR_SIZE + SWAPPER_DIR_SIZE + RESERVED_TTBR0_SIZE)</span><br><span class="line"><span class="number">1</span>:	stp	xzr, xzr, [x0], #<span class="number">16</span></span><br><span class="line">	stp	xzr, xzr, [x0], #<span class="number">16</span></span><br><span class="line">	stp	xzr, xzr, [x0], #<span class="number">16</span></span><br><span class="line">	stp	xzr, xzr, [x0], #<span class="number">16</span></span><br><span class="line">	subs	x1, x1, #<span class="number">64</span></span><br><span class="line">	b.ne	<span class="number">1b</span></span><br></pre></td></tr></table></figure>
+
+<p>在vmlinux.lds.S中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">. = ALIGN(PAGE_SIZE);</span><br><span class="line">idmap_pg_dir = .;</span><br><span class="line">. += IDMAP_DIR_SIZE;</span><br><span class="line">swapper_pg_dir = .;</span><br><span class="line">. += SWAPPER_DIR_SIZE;</span><br></pre></td></tr></table></figure>
+
+<p>所以<code>idmap_pg_dir</code>是在bss段后面且是<code>PAGE_SIZE</code>对齐的. x0保存<code>idmap_pg_dir</code>当前所在的物理地址. x1保存<code>idmap_pg_dir</code>和<code>swapper_pg_dir</code>的大小.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SWAPPER_DIR_SIZE	(SWAPPER_PGTABLE_LEVELS * PAGE_SIZE)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IDMAP_DIR_SIZE		(IDMAP_PGTABLE_LEVELS * PAGE_SIZE)</span></span><br></pre></td></tr></table></figure>
+
+<p>通过对宏的观察, 我们了解到<code>idmap_pg_dir</code>和<code>swapper_pg_dir</code>都是3个PAGE_SIZE(12K), 我们知道使用4K页加48bit虚拟地址需要4级页表才能满足, 每级页表都是一个PAGE</p>
+<ul>
+<li><p>level0 [47:39] 512个entry, 每个8byte, 一共4K</p>
+</li>
+<li><p>level1 [38:30] 512个entry, 每个8byte, 一共4K</p>
+</li>
+<li><p>level2 [29:21] 512个entry, 每个8byte, 一共4K</p>
+</li>
+<li><p>level3 [20:13] 512个entry, 每个8byte, 一共4K</p>
+</li>
+</ul>
+<p>剩下的11:0地址用level3的内容拼接得到最终的物理地址.</p>
+<p>而这里<code>idmap_pg_dir</code>和<code>swapper_pg_dir</code>都只有3个PAGE是如何来映射的呢? 其实这里KERNEL在早期的临时页表为了节省内存, 并没有使用标准的4级映射, 而是使用的MMU中的block来直接描述2M(使用低21bit)内存区, 而不是用entry来描述4K页, 从而节省了level3的页表.</p>
+<p>也就是说上面的level2页表中, 每条entry指向的不是level3页表, 而是一个2M的内存区.</p>
+<p>上面的代码把这里的6个page全部清零, 因此所有的entry都成了invalid.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * x7保存level3页表的entry的flags, 表明是普通内存,</span></span><br><span class="line"><span class="comment"> * 是一个block的entry, 后面细说</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">mov	x7, SWAPPER_MM_MMUFLAGS</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Create the identity mapping.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">adrp	x0, idmap_pg_dir</span><br><span class="line">adrp	x3, __idmap_text_start		<span class="comment">// __pa(__idmap_text_start)</span></span><br><span class="line"></span><br><span class="line">create_pgd_entry x0, x3, x5, x6</span><br><span class="line">mov	x5, x3				<span class="comment">// __pa(__idmap_text_start)</span></span><br><span class="line">adr_l	x6, __idmap_text_end		<span class="comment">// __pa(__idmap_text_end)</span></span><br><span class="line">create_block_map x0, x7, x3, x5, x6</span><br></pre></td></tr></table></figure>
+
+<p>x0保存<code>idmap_pg_dir</code>的物理地址. x3保存<code>__idmap_text_start</code>的物理地址.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">. = ALIGN(SZ_4K);				\</span><br><span class="line">VMLINUX_SYMBOL(__idmap_text_start) = .;		\</span><br><span class="line">*(.idmap.text)					\</span><br><span class="line">VMLINUX_SYMBOL(__idmap_text_end) = .;</span><br></pre></td></tr></table></figure>
+
+<p>所以x3保存的是<code>.idmap.text</code>段所在的物理地址. 这个段是head.S文件的后半部分, 这部份code是CPU和MMU从关闭到开启的过程中执行的code, 说道这里你应该明白了, <code>idmap_pg_dir</code>对应的页表是用来将与KERNEL所在物理地址相等的虚拟地址映射到相同的物理地址. 从而保证开启MMU时, 不会发生无法获取页表的情况. 而<code>swapper_pg_dir</code>如其名是swapper进程运行所需的页表, 是内核初始化过程所用的页表.</p>
+<p>另外ARM64有TTBR0, TTBR1(Translation Table Base Register)分别用来指示内核空间和用户空间页表所在的物理地址, 而在这个时候, TTBR0不是用来指示用户空间地址, 而是用来指示与物理地址相等的虚拟地址所用的页表. 所以TTBR0里面是<code>.idmap.text</code>的物理地址, TTBR1里面是<code>swapper_pg_dir</code>的物理地址.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">	.macro	create_pgd_entry, tbl, virt, tmp1, tmp2</span><br><span class="line">	<span class="comment">/* 这里PGDIR_SHIFT是39, PTRS_PER_PGD是512 */</span></span><br><span class="line">	create_table_entry \tbl, \virt, PGDIR_SHIFT, PTRS_PER_PGD, \tmp1, \tmp2</span><br><span class="line">	<span class="comment">/* 使用4K页时SWAPPER_PGTABLE_LEVELS为3 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> SWAPPER_PGTABLE_LEVELS &gt; 3</span></span><br><span class="line">	create_table_entry \tbl, \virt, PUD_SHIFT, PTRS_PER_PUD, \tmp1, \tmp2</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> SWAPPER_PGTABLE_LEVELS &gt; 2</span></span><br><span class="line">	<span class="comment">/* SWAPPER_TABLE_SHIFT是30, PTRS_PER_PTE是512 */</span></span><br><span class="line">	create_table_entry \tbl, \virt, SWAPPER_TABLE_SHIFT, PTRS_PER_PTE, \tmp1, \tmp2</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	.endm</span><br></pre></td></tr></table></figure>
+
+<p><code>create_pgd_entry</code>宏用来创建level0和和level1的页表. 虚拟地址的[47:39]在level0页表中进行索引, 索引到的entry指向level1的页表, 这里level1的页表就是level0页表的下一个PAGE. 对应的[38:30]在level1页表中进行索引, 索引的entry指向level2的页表. 也就是再下一个PAGE. 这里来分析下<code>create_table_entry</code>宏</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">.macro	create_table_entry, tbl, virt, shift, ptrs, tmp1, tmp2</span><br><span class="line"><span class="comment">/* 下面两条指令取出虚拟地址(virt)的[shift+9:shift], 作为index */</span></span><br><span class="line">lsr	\tmp1, \virt, #\shift</span><br><span class="line">and	\tmp1, \tmp1, #\ptrs - <span class="number">1</span>	<span class="comment">// table index</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 下面两条指令计算出这一级页表对应virt的entry的值, 第一条指令计算entry指向的下一级</span></span><br><span class="line"><span class="comment"> * 页表的物理地址, 第二条指令指定当前entry是PMD_TYPE_TABLE, 也就是表示当前entry</span></span><br><span class="line"><span class="comment"> * 指向的仍然是一个页目录, 具体看arm的architecture reference manual.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">add	\tmp2, \tbl, #PAGE_SIZE</span><br><span class="line">orr	\tmp2, \tmp2, #PMD_TYPE_TABLE	<span class="comment">// address of next table and entry type</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 使用之前计算的index来得到virt对应的entry的位置(tbl + index * 8byte), 然后把</span></span><br><span class="line"><span class="comment"> * 页表entry存到那个位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">str	\tmp2, [\tbl, \tmp1, lsl #<span class="number">3</span>]</span><br><span class="line"><span class="comment">/* tbl指向下一级页表, 方便下一次计算 */</span></span><br><span class="line">add	\tbl, \tbl, #PAGE_SIZE		<span class="comment">// next level table page</span></span><br><span class="line">.endm</span><br></pre></td></tr></table></figure>
+
+<p>level2的页表由<code>create_block_map</code>来配置.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">	.macro	create_block_map, tbl, flags, phys, start, end</span><br><span class="line">	<span class="comment">/* SWAPPER_BLOCK_SHIFT是21, 把物理地址右移21bit, 剩下的就是entry中的地址 */</span></span><br><span class="line">	lsr	\phys, \phys, #SWAPPER_BLOCK_SHIFT</span><br><span class="line">	<span class="comment">/* 这两条指令取出start的[29:21]作为level2页表的索引, 存在start中 */</span></span><br><span class="line">	lsr	\start, \start, #SWAPPER_BLOCK_SHIFT</span><br><span class="line">	and	\start, \start, #PTRS_PER_PTE - <span class="number">1</span>	<span class="comment">// table index</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * phys = flags | (phys &lt;&lt; 21), 很明显, 就是构建一条level2页表entry,</span></span><br><span class="line"><span class="comment">	 * entry将虚拟地址start(前面两条指令计算之前的值)转换成物理地址phys(计算前的值)</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	orr	\phys, \flags, \phys, lsl #SWAPPER_BLOCK_SHIFT	<span class="comment">// table entry</span></span><br><span class="line">	<span class="comment">/* 将end也计算成一个index, 方便后面的循环建立页表 */</span></span><br><span class="line">	lsr	\end, \end, #SWAPPER_BLOCK_SHIFT</span><br><span class="line">	and	\end, \end, #PTRS_PER_PTE - <span class="number">1</span>		<span class="comment">// table end index</span></span><br><span class="line">	<span class="comment">/* 将之前构建的页表entry存到level2页表对应的位置(由[29:21]索引) */</span></span><br><span class="line"><span class="number">9999</span>:	str	\phys, [\tbl, \start, lsl #<span class="number">3</span>]		<span class="comment">// store the entry</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * 索引每次加1, 页表entry的物理地址每次加2M, 这样就能计算出下一条entry的内容</span></span><br><span class="line"><span class="comment">	 * 和存放路径了</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	add	\start, \start, #<span class="number">1</span>			<span class="comment">// next entry</span></span><br><span class="line">	add	\phys, \phys, #SWAPPER_BLOCK_SIZE		<span class="comment">// next block</span></span><br><span class="line">	<span class="comment">/* 循环创建参数中start到end的地址的映射 */</span></span><br><span class="line">	cmp	\start, \end</span><br><span class="line">	b.ls	<span class="number">9999b</span></span><br><span class="line">	.endm</span><br></pre></td></tr></table></figure>
+
+<p>综合上面的注释, 这里就是按照armv8 MMU的block条目来创建从start到end虚拟地址空间的映射, 每一个条目映射2M的地址空间. 这里把前面提到的x7保存的flags细说一下.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SWAPPER_MM_MMUFLAGS	(PMD_ATTRINDX(MT_NORMAL) | SWAPPER_PMD_FLAGS)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MT_NORMAL		4</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PMD_ATTRINDX(t)		(_AT(pmdval_t, (t)) &lt;&lt; 2)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SWAPPER_PMD_FLAGS	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PMD_TYPE_SECT		(_AT(pmdval_t, 1) &lt;&lt; 0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PMD_SECT_AF		(_AT(pmdval_t, 1) &lt;&lt; 10)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PMD_SECT_S		(_AT(pmdval_t, 3) &lt;&lt; 8)</span></span><br><span class="line"><span class="keyword">typedef</span> u64 <span class="type">pmdval_t</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __ASSEMBLY__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _AC(X,Y)	X</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _AT(T,X)	X</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __AC(X,Y)	(X##Y)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _AC(X,Y)	__AC(X,Y)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _AT(T,X)	((T)(X))</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>具体每个字段的含义可以查询arm手册来看, 大致来说, 这个flags表明, 这条entry指向的是一个2M的block, 这个block是一段普通的内存(不是device memory, 下篇内容我们还会继续说), 是已经访问过的, 是inner sharable的. 另外一些没有设定的位置为0也有一些含义, 如表示code是可执行的, 访问权限是EL0 RO, EL1 RW, 具体看arm的architecture reference manual.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">adrp	x0, swapper_pg_dir</span><br><span class="line">mov_q	x5, KIMAGE_VADDR + TEXT_OFFSET	<span class="comment">// compile time __va(_text)</span></span><br><span class="line">add	x5, x5, x23			<span class="comment">// add KASLR displacement</span></span><br><span class="line">create_pgd_entry x0, x5, x3, x6</span><br><span class="line">adrp	x6, _end			<span class="comment">// runtime __pa(_end)</span></span><br><span class="line">adrp	x3, _text			<span class="comment">// runtime __pa(_text)</span></span><br><span class="line">sub	x6, x6, x3			<span class="comment">// _end - _text</span></span><br><span class="line">add	x6, x6, x5			<span class="comment">// runtime __va(_end)</span></span><br><span class="line">create_block_map x0, x7, x3, x5, x6</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Since the page tables have been populated with non-cacheable</span></span><br><span class="line"><span class="comment"> * accesses (MMU disabled), invalidate the idmap and swapper page</span></span><br><span class="line"><span class="comment"> * tables again to remove any speculatively loaded cache lines.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">adrp	x0, idmap_pg_dir</span><br><span class="line">ldr	x1, =(IDMAP_DIR_SIZE + SWAPPER_DIR_SIZE + RESERVED_TTBR0_SIZE)</span><br><span class="line">dmb	sy</span><br><span class="line">bl	__inval_dcache_area</span><br><span class="line"></span><br><span class="line">ret	x28</span><br></pre></td></tr></table></figure>
+
+<p>后面的code参照前面的分析就很好理解了, 创建swapper的页表, 然后用<code>dmb sy</code>完成同步, 最后清空缓存.</p>
+<p>这里由一个需要注意低地方, 跟之前说的KASLR有关. <code>add	x5, x5, x23</code>在x5中保存_text的虚拟地址之后, 又加了x23, 这个x23就是之前保存的kaslr区域的大小. 也就是说把KEREL运行的虚拟地址进行了随机化.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+              <a href="/tags/arm64/" rel="tag"><i class="fa fa-tag"></i> arm64</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/11/30/fe273d09ca75/" rel="prev" title="arm64_linux启动流程分析04_KASLR">
+                  <i class="fa fa-angle-left"></i> arm64_linux启动流程分析04_KASLR
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/30/4fe0890861ef/" rel="next" title="arm64_linux启动流程分析06_CPU的一些初始化">
+                  arm64_linux启动流程分析06_CPU的一些初始化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">gngshn</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

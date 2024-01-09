@@ -198,7 +198,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/fe273d09ca75/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -216,7 +216,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/" class="post-title-link" itemprop="url">arm64_linux启动流程分析04_KASLR</a>
+          <a href="/2017/11/30/fe273d09ca75/" class="post-title-link" itemprop="url">arm64_linux启动流程分析04_KASLR</a>
         </h2>
 
         <div class="post-meta-container">
@@ -234,7 +234,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|               |       |             |</span><br><span class="line">| <span class="number">2</span>M align resv | KASLR | TEXT_OFFSET | KERNEL IMAGE</span><br><span class="line">|               |       |             |</span><br><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|                       |             |</span><br><span class="line">|                       |             +----内核在DDR中的位置.</span><br><span class="line">|                       +----------------- ARM64规定的KERNEL运行前必须放在 <span class="number">2</span>M对齐地址+TEXT_OFFSET 的地方</span><br><span class="line">|                                          这里是经过KASLR技术relocate之后的位置.</span><br><span class="line">+----------------------------------------- DDR起始地址.</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9004-KASLR/#more" rel="contents">
+              <a class="btn" href="/2017/11/30/fe273d09ca75/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -296,7 +296,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/d07d299ed015/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -314,7 +314,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/" class="post-title-link" itemprop="url">arm64_linux启动流程分析03_设定当前core的启动状态</a>
+          <a href="/2017/11/30/d07d299ed015/" class="post-title-link" itemprop="url">arm64_linux启动流程分析03_设定当前core的启动状态</a>
         </h2>
 
         <div class="post-meta-container">
@@ -332,7 +332,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -362,7 +362,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(el2_setup)</span><br><span class="line">	msr	SPsel, #<span class="number">1</span>			<span class="comment">// We want to use SP_EL&#123;1,2&#125;</span></span><br><span class="line">	mrs	x0, CurrentEL</span><br><span class="line">	cmp	x0, #CurrentEL_EL2</span><br><span class="line">	b.eq	<span class="number">1f</span></span><br><span class="line">	mrs	x0, sctlr_el1</span><br><span class="line"><span class="title function_">CPU_BE</span><span class="params">(	orr	x0, x0, #(<span class="number">3</span> &lt;&lt; <span class="number">24</span>)	)</span>	<span class="comment">// Set the EE and E0E bits for EL1</span></span><br><span class="line"><span class="title function_">CPU_LE</span><span class="params">(	bic	x0, x0, #(<span class="number">3</span> &lt;&lt; <span class="number">24</span>)	)</span>	<span class="comment">// Clear the EE and E0E bits for EL1</span></span><br><span class="line">	msr	sctlr_el1, x0</span><br><span class="line">	mov	w0, #BOOT_CPU_MODE_EL1		<span class="comment">// This cpu booted in EL1</span></span><br><span class="line">	isb</span><br><span class="line">	ret</span><br><span class="line"></span><br><span class="line">1:	mrs	x0, sctlr_el2</span><br><span class="line">......省略......</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9003-%E8%AE%BE%E5%AE%9A%E5%BD%93%E5%89%8Dcore%E7%9A%84%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81/#more" rel="contents">
+              <a class="btn" href="/2017/11/30/d07d299ed015/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -393,7 +393,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9002-%E4%BF%9D%E5%AD%98%E5%90%AF%E5%8A%A8%E4%BF%A1%E6%81%AF/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/0d5175e7e831/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -411,7 +411,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9002-%E4%BF%9D%E5%AD%98%E5%90%AF%E5%8A%A8%E4%BF%A1%E6%81%AF/" class="post-title-link" itemprop="url">arm64_linux启动流程分析02_保存启动信息</a>
+          <a href="/2017/11/30/0d5175e7e831/" class="post-title-link" itemprop="url">arm64_linux启动流程分析02_保存启动信息</a>
         </h2>
 
         <div class="post-meta-container">
@@ -429,7 +429,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -459,7 +459,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">preserve_boot_args:</span><br><span class="line">	mov	x21, x0				// x21=FDT</span><br><span class="line"></span><br><span class="line">	adr_l	x0, boot_args			// record the contents of</span><br><span class="line">	stp	x21, x1, [x0]			// x0 .. x3 at kernel entry</span><br><span class="line">	stp	x2, x3, [x0, #16]</span><br><span class="line"></span><br><span class="line">	dmb	sy				// needed before dc ivac with</span><br><span class="line">						// MMU off</span><br><span class="line"></span><br><span class="line">	mov	x1, #0x20			// 4 x 8 bytes</span><br><span class="line">	b	__inval_dcache_area		// tail call</span><br><span class="line">ENDPROC(preserve_boot_args)</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9002-%E4%BF%9D%E5%AD%98%E5%90%AF%E5%8A%A8%E4%BF%A1%E6%81%AF/#more" rel="contents">
+              <a class="btn" href="/2017/11/30/0d5175e7e831/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -490,7 +490,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9001-%E5%86%85%E6%A0%B8%E7%9A%84%E5%85%A5%E5%8F%A3/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/5b2ebc5168b6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -508,7 +508,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9001-%E5%86%85%E6%A0%B8%E7%9A%84%E5%85%A5%E5%8F%A3/" class="post-title-link" itemprop="url">arm64_linux启动流程分析01_内核的入口</a>
+          <a href="/2017/11/30/5b2ebc5168b6/" class="post-title-link" itemprop="url">arm64_linux启动流程分析01_内核的入口</a>
         </h2>
 
         <div class="post-meta-container">
@@ -526,7 +526,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -557,7 +557,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(_text)</span><br><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	.....省略部分无关内容....</span><br><span class="line"></span><br><span class="line">	. = KIMAGE_VADDR + TEXT_OFFSET;</span><br><span class="line"></span><br><span class="line">	.head.text : &#123;</span><br><span class="line">		_text = .;</span><br><span class="line">		HEAD_TEXT</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/11/30/arm64-linux%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%9001-%E5%86%85%E6%A0%B8%E7%9A%84%E5%85%A5%E5%8F%A3/#more" rel="contents">
+              <a class="btn" href="/2017/11/30/5b2ebc5168b6/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -588,7 +588,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-5-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/b196adf5da31/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -606,7 +606,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-5-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">libuv 源码分析(5) - 文件操作流程</a>
+          <a href="/2017/09/01/b196adf5da31/" class="post-title-link" itemprop="url">libuv 源码分析(5) - 文件操作流程</a>
         </h2>
 
         <div class="post-meta-container">
@@ -624,7 +624,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -646,11 +646,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#x6e;&#x67;&#x73;&#104;&#x6e;&#64;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#99;&#x6f;&#109;">&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#99;&#x6f;&#109;</a></p>
 <p>上一篇, 我们讲到了libuv的工作队列, 这一篇我们讲到的文件操作刚好就用到了工作队列. 刚好复习一下.<br>先来看一段libuv文件操作的代码</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-5-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B/#more" rel="contents">
+              <a class="btn" href="/2017/09/01/b196adf5da31/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -681,7 +681,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-4-libuv%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97-%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/3f20ec24f2fd/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -699,7 +699,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-4-libuv%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97-%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="post-title-link" itemprop="url">libuv 源码分析(4) - libuv的工作队列(线程池)</a>
+          <a href="/2017/09/01/3f20ec24f2fd/" class="post-title-link" itemprop="url">libuv 源码分析(4) - libuv的工作队列(线程池)</a>
         </h2>
 
         <div class="post-meta-container">
@@ -717,7 +717,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -739,12 +739,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#x6d;">&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#x6d;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#110;&#103;&#x73;&#104;&#110;&#x40;&#x67;&#109;&#x61;&#105;&#108;&#x2e;&#99;&#111;&#109;">&#103;&#110;&#103;&#x73;&#104;&#110;&#x40;&#x67;&#109;&#x61;&#105;&#108;&#x2e;&#99;&#111;&#109;</a></p>
 <p>libuv通过<code>uv_work_queue</code>来交付任务给工作队列的, 这个api也是libuv实现文件异步操作的基础:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UV_EXTERN <span class="type">int</span> <span class="title function_">uv_queue_work</span><span class="params">(<span class="type">uv_loop_t</span>* loop,</span></span><br><span class="line"><span class="params">                            <span class="type">uv_work_t</span>* req,</span></span><br><span class="line"><span class="params">                            uv_work_cb work_cb,</span></span><br><span class="line"><span class="params">                            uv_after_work_cb after_work_cb)</span>;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-4-libuv%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97-%E7%BA%BF%E7%A8%8B%E6%B1%A0/#more" rel="contents">
+              <a class="btn" href="/2017/09/01/3f20ec24f2fd/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -775,7 +775,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-3-poll%E8%BF%87%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/0ca8e8961f7e/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -793,7 +793,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-3-poll%E8%BF%87%E7%A8%8B/" class="post-title-link" itemprop="url">libuv 源码阅读(3) - poll过程</a>
+          <a href="/2017/09/01/0ca8e8961f7e/" class="post-title-link" itemprop="url">libuv 源码阅读(3) - poll过程</a>
         </h2>
 
         <div class="post-meta-container">
@@ -811,7 +811,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -833,11 +833,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#64;&#103;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#103;&#x6e;&#x67;&#115;&#x68;&#110;&#64;&#103;&#109;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#x6e;&#103;&#x73;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;">&#103;&#x6e;&#103;&#x73;&#x68;&#x6e;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#x6d;</a></p>
 <p>上一篇, 我们将到libuv的event loop过程, 其中留了个悬念, 下面我们来解除这个悬念, 直接上函数, 这个函数特别长, 我们依旧直接在函数里面写注释把~</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-3-poll%E8%BF%87%E7%A8%8B/#more" rel="contents">
+              <a class="btn" href="/2017/09/01/0ca8e8961f7e/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -868,7 +868,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-2-event-loop%E7%9A%84%E8%BF%90%E8%BD%AC/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/b607a607ddf8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -886,7 +886,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-2-event-loop%E7%9A%84%E8%BF%90%E8%BD%AC/" class="post-title-link" itemprop="url">libuv 源码分析(2) - event loop的运转</a>
+          <a href="/2017/09/01/b607a607ddf8/" class="post-title-link" itemprop="url">libuv 源码分析(2) - event loop的运转</a>
         </h2>
 
         <div class="post-meta-container">
@@ -904,7 +904,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -926,11 +926,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#x67;&#110;&#103;&#115;&#x68;&#110;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#x6d;">&#x67;&#110;&#103;&#115;&#x68;&#110;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#x6d;</a></p>
+          <p>by gngshn <a href="mailto:&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;">&#103;&#110;&#x67;&#115;&#x68;&#x6e;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;</a></p>
 <p>上一篇文章我们讲到了 libuv的初始化, 现在乘热打铁, 我们接着看看 libuv的 event loop是如何运转的.<br>对于 event loop的运转在其官方的文档中有详细的描述<br><br><a target="_blank" rel="noopener" href="http://docs.libuv.org/en/v1.x/design.html">libuv design overview</a><br>event loop的流程图如下</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-2-event-loop%E7%9A%84%E8%BF%90%E8%BD%AC/#more" rel="contents">
+              <a class="btn" href="/2017/09/01/b607a607ddf8/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -961,7 +961,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-1-event-loop%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/09/01/0aa91256124a/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -979,7 +979,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-1-event-loop%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96/" class="post-title-link" itemprop="url">libuv 源码分析(1) - event loop的初始化</a>
+          <a href="/2017/09/01/0aa91256124a/" class="post-title-link" itemprop="url">libuv 源码分析(1) - event loop的初始化</a>
         </h2>
 
         <div class="post-meta-container">
@@ -997,7 +997,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1019,12 +1019,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#109;">&#x67;&#x6e;&#x67;&#115;&#x68;&#110;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#111;&#109;</a></p>
+          <p>by gngshn <a href="mailto:&#x67;&#x6e;&#x67;&#x73;&#x68;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#109;">&#x67;&#x6e;&#x67;&#x73;&#x68;&#110;&#x40;&#103;&#x6d;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#109;</a></p>
 <p>从这里开始我将从linux的角度来看看libuv的工作原理, 如果您希望看到libuv跨平台的实现方式, 那你可能要失望了. 因为这一系列文章都将从linux的角度来写.</p>
 <p>我们知道如果需要使用libuv的event loop需要通过<code>uv_default_loop</code>或者<code>uv_loop_init</code>来获得一个loop, 前者也是会调用后者的. 所以我们来看看<code>uv_loop_init</code>到底做了些什么, 我将在source code中进行直接写注释来描述相关字段的含义.</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2017/09/01/libuv-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90-1-event-loop%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96/#more" rel="contents">
+              <a class="btn" href="/2017/09/01/0aa91256124a/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1055,7 +1055,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/04/15/%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%A7%8B%E4%B9%A6%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/04/15/090c3684bdb9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -1073,7 +1073,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/04/15/%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%A7%8B%E4%B9%A6%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">正式开始书写自己的博客</a>
+          <a href="/2017/04/15/090c3684bdb9/" class="post-title-link" itemprop="url">正式开始书写自己的博客</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1091,7 +1091,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-09 17:10:37" itemprop="dateModified" datetime="2024-01-09T17:10:37+08:00">2024-01-09</time>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
     </span>
 
   

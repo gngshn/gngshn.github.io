@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.gngshn.com","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在kernel的代码中, 有时候会看见IS_ENABLED(CONFIG_XXXX)来测试某个Kconfig选项是否开启(即选中为y或者m). 如 12if (IS_ENABLED(CONFIG_TIME_LOW_RES) &amp;&amp; timer-&gt;is_rel)	rem -&#x3D; hrtimer_resolution; 这里当TIME_LOW_RES这个Kconfig选项配置为y或m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kernel中的IS_ENABLED">
+<meta property="og:url" content="https://blog.gngshn.com/2017/04/15/82864c500e55/index.html">
+<meta property="og:site_name" content="gngshn的博客">
+<meta property="og:description" content="在kernel的代码中, 有时候会看见IS_ENABLED(CONFIG_XXXX)来测试某个Kconfig选项是否开启(即选中为y或者m). 如 12if (IS_ENABLED(CONFIG_TIME_LOW_RES) &amp;&amp; timer-&gt;is_rel)	rem -&#x3D; hrtimer_resolution; 这里当TIME_LOW_RES这个Kconfig选项配置为y或m">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-15T08:55:11.000Z">
+<meta property="article:modified_time" content="2024-01-09T09:20:11.304Z">
+<meta property="article:author" content="gngshn">
+<meta property="article:tag" content="driver">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.gngshn.com/2017/04/15/82864c500e55/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.gngshn.com/2017/04/15/82864c500e55/","path":"2017/04/15/82864c500e55/","title":"kernel中的IS_ENABLED"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>kernel中的IS_ENABLED | gngshn的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">gngshn的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">专注, 平静</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gngshn"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">gngshn</p>
+  <div class="site-description" itemprop="description">linux程序员一枚</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/gngshn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;gngshn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:gngshn@gmail.com" title="E-Mail → mailto:gngshn@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/04/15/82864c500e55/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="kernel中的IS_ENABLED | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kernel中的IS_ENABLED
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-15 16:55:11" itemprop="dateCreated datePublished" datetime="2017-04-15T16:55:11+08:00">2017-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在kernel的代码中, 有时候会看见<code>IS_ENABLED(CONFIG_XXXX)</code>来测试某个Kconfig选项是否开启(即选中为<code>y</code>或者<code>m</code>). 如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (IS_ENABLED(CONFIG_TIME_LOW_RES) &amp;&amp; timer-&gt;is_rel)</span><br><span class="line">	rem -= hrtimer_resolution;</span><br></pre></td></tr></table></figure>
+<p>这里当TIME_LOW_RES这个Kconfig选项配置为<code>y</code>或<code>m</code>, 并且<code>timer-&gt;is_rel</code>不为0时调用<code>rem -= hrtimer_resolution</code>.<br>那么这个是怎样实现的呢?</p>
+<span id="more"></span>
+<p>首先在Kconfig中选中某个选项为<code>y</code>或<code>m</code>时, 在<code>.config</code>文件中就会由一个<code>CONFIG_XXXXX=y</code>或<code>CONFIG_XXXXX=m</code>, 并且会自动生成一个头文件<code>autoconfig.h</code>. 当选中为<code>y</code>时, 头文件中包含<code>#define CONFIG_XXXXX 1</code>, 当选中为<code>m</code>时, 头文件中包含<code>#define CONFIG_XXXXX_MODULE 1</code>, 当不选中是, 头文件中不包含相关语句.<br><code>IS_ENABLED</code>定义为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))</span></span><br></pre></td></tr></table></figure>
+<p><code>IS_BUILTIN</code>, <code>IS_MODULE</code>和<code>__or</code>分别定义为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> IS_BUILTIN(option) __is_defined(option)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IS_MODULE(option) __is_defined(option##_MODULE)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> __or(x, y)			___or(x, y)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ___or(x, y)			____or(__ARG_PLACEHOLDER_##x, y)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ____or(arg1_or_junk, y)		__take_second_arg(arg1_or_junk 1, y)</span></span><br></pre></td></tr></table></figure>
+<p><code>__is_defined</code>定义为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> __is_defined(x)			___is_defined(x)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)</span></span><br></pre></td></tr></table></figure>
+<p>在这之前定义了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> __ARG_PLACEHOLDER_1 0,</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __take_second_arg(__ignored, val, ...) val</span></span><br></pre></td></tr></table></figure>
+<p>当<code>#define CONFIG_XXXXX 1</code>时<code>__is_defined(1)</code>展开为<code>____is_defined(0,)</code>, 即<code>__take_second_arg(0, 1, 0)</code>, 最终为<code>1</code><br>当<code>CONFIG_XXXXX</code>没有定义时<code>__is_defined()</code>展开为<code>____is_defined()</code>(因为没有定义__ARG_PLACEHOLDER_), 即<code>__take_second_arg(1, 0)</code>, 最终为<code>0</code><br>同样的方法可以理解<code>__or</code>.<br>因此<code>IS_ENABLED</code>主要是将没有定义的<code>CONFIG_XXXXX</code>映射到0.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/driver/" rel="tag"><i class="fa fa-tag"></i> driver</a>
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/04/15/220446e73c89/" rel="prev" title="使用docker来构建嵌入式开发环境">
+                  <i class="fa fa-angle-left"></i> 使用docker来构建嵌入式开发环境
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/04/15/1110205abd52/" rel="next" title="mmap读写寄存器应注意不要越界">
+                  mmap读写寄存器应注意不要越界 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">gngshn</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

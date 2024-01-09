@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.gngshn.com","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇内容主要是说一下KASLR KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图 12345678910+---------------+-------+-------------+----------------------|               |">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arm64_linux启动流程分析04_KASLR">
+<meta property="og:url" content="https://blog.gngshn.com/2017/11/30/fe273d09ca75/index.html">
+<meta property="og:site_name" content="gngshn的博客">
+<meta property="og:description" content="这篇内容主要是说一下KASLR KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图 12345678910+---------------+-------+-------------+----------------------|               |">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-30T04:00:19.000Z">
+<meta property="article:modified_time" content="2024-01-09T09:20:11.304Z">
+<meta property="article:author" content="gngshn">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="arm64">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.gngshn.com/2017/11/30/fe273d09ca75/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.gngshn.com/2017/11/30/fe273d09ca75/","path":"2017/11/30/fe273d09ca75/","title":"arm64_linux启动流程分析04_KASLR"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>arm64_linux启动流程分析04_KASLR | gngshn的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">gngshn的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">专注, 平静</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gngshn"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">gngshn</p>
+  <div class="site-description" itemprop="description">linux程序员一枚</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/gngshn" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;gngshn" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:gngshn@gmail.com" title="E-Mail → mailto:gngshn@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/fe273d09ca75/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="arm64_linux启动流程分析04_KASLR | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          arm64_linux启动流程分析04_KASLR
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-30 12:00:19" itemprop="dateCreated datePublished" datetime="2017-11-30T12:00:19+08:00">2017-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-09 17:20:11" itemprop="dateModified" datetime="2024-01-09T17:20:11+08:00">2024-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/arm/" itemprop="url" rel="index"><span itemprop="name">arm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇内容主要是说一下KASLR</p>
+<p>KASLR是让内核在一个随机的地址上运行的技术, 就是说内核的运行时地址是随机的, 每次启动会变化. 这样内核的符号对应的地址会变化并不是链接地址从而加强安全性. 这里画一个图</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|               |       |             |</span><br><span class="line">| <span class="number">2</span>M align resv | KASLR | TEXT_OFFSET | KERNEL IMAGE</span><br><span class="line">|               |       |             |</span><br><span class="line">+---------------+-------+-------------+----------------------</span><br><span class="line">|                       |             |</span><br><span class="line">|                       |             +----内核在DDR中的位置.</span><br><span class="line">|                       +----------------- ARM64规定的KERNEL运行前必须放在 <span class="number">2</span>M对齐地址+TEXT_OFFSET 的地方</span><br><span class="line">|                                          这里是经过KASLR技术relocate之后的位置.</span><br><span class="line">+----------------------------------------- DDR起始地址.</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>目前开启KASLR的内核启动有两种办法:</p>
+<ol>
+<li><p>bootloader在设备树中添加一个<code>kaslr-seed</code>的节点. 并赋予一个随机的偏移, 将KERNEL放在ARM64规定的2M对齐地址+TEXT_OFFSET的地方, 然后启动内核, 之后内核会将自己relocate到2M对齐地址+KASLR offset+TEXT_OFFSET的地方运行</p>
+</li>
+<li><p>bootloader把将KERNEL放在2M对齐地址+KASLR offset+TEXT_OFFSET的地方(KASLR offset小于2M), 然后启动内核, 之后内核会修复symbol, 然后在原地运行.</p>
+</li>
+</ol>
+<p>在上一篇文章中, 我们放了一段code没说</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adrp	x23, __PHYS_OFFSET</span><br><span class="line">and	x23, x23, MIN_KIMG_ALIGN - <span class="number">1</span>	<span class="comment">// KASLR offset, defaults to 0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> __PHYS_OFFSET	(KERNEL_START - TEXT_OFFSET)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KERNEL_START      _text</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MIN_KIMG_ALIGN		SZ_2M</span></span><br></pre></td></tr></table></figure>
+
+<p>我们假设使用第二种启动办法, 那么<code>__PHYS_OFFSET</code>指向KASLR区域的最后面所在的物理地址. 第二条汇编就会计算出KASLR区域的大小然后保存在x23寄存器中. 对这个寄存器多加留意, 在调用<code>start_kernel</code>之前还会再用到.</p>
+<p>对于KASLR的BOOT后面还需继续降到, 这里先放放, 我们先在下篇接着往下说.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+              <a href="/tags/arm64/" rel="tag"><i class="fa fa-tag"></i> arm64</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/11/30/d07d299ed015/" rel="prev" title="arm64_linux启动流程分析03_设定当前core的启动状态">
+                  <i class="fa fa-angle-left"></i> arm64_linux启动流程分析03_设定当前core的启动状态
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/30/bc1f4d0c8f91/" rel="next" title="arm64_linux启动流程分析05_配置内核启动的临时页表">
+                  arm64_linux启动流程分析05_配置内核启动的临时页表 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">gngshn</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
