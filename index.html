@@ -153,7 +153,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -189,6 +189,100 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2024/09/01/e0fb3ca2dadd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="gngshn">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gngshn的博客">
+      <meta itemprop="description" content="linux程序员一枚">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | gngshn的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/09/01/e0fb3ca2dadd/" class="post-title-link" itemprop="url">解决arm64 linux kernel O0编译时报错的问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-09-01 14:20:54 / 修改时间：14:54:10" itemprop="dateCreated datePublished" datetime="2024-09-01T14:20:54+08:00">2024-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/arm/" itemprop="url" rel="index"><span itemprop="name">arm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在学习 linux driver 时, 在 qemu 上使用 aarch64 linux 跑, 在想使用单步跑看看 driver 的某些执行路径时, 发现给 driver 添加 <code>O0</code> 编译时会有很多错误.</p>
+<p>比如在 <code>Linux-6.10</code> 中, 我们在如下修改状态下, 并关闭 <code>JUMP_LABEL</code> 功能时, 编译的时候</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">diff --git a/drivers/Makefile b/drivers/Makefile</span><br><span class="line">index fe9ceb0d2..f60455123 100644</span><br><span class="line">--- a/drivers/Makefile</span><br><span class="line">+++ b/drivers/Makefile</span><br><span class="line">@@ -193,3 +193,5 @@ obj-$(CONFIG_CDX_BUS)               += cdx/</span><br><span class="line"> obj-$(CONFIG_DPLL)             += dpll/</span><br><span class="line"></span><br><span class="line"> obj-$(CONFIG_S390)             += s390/</span><br><span class="line">+</span><br><span class="line">+subdir-ccflags-y += -O0</span><br></pre></td></tr></table></figure>
+
+<p>会报出汗多的 <code>error: invalid operand for inline asm constraint &#39;i&#39;</code> 错误. 下面我们就来探究下这个问题.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/09/01/e0fb3ca2dadd/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -234,7 +328,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -326,7 +420,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -423,7 +517,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -521,7 +615,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -614,7 +708,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -709,7 +803,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -806,7 +900,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -903,7 +997,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -999,7 +1093,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
+      <time title="修改时间：2024-09-01 14:54:10" itemprop="dateModified" datetime="2024-09-01T14:54:10+08:00">2024-09-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1029,104 +1123,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/11/30/4fe0890861ef/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blog.gngshn.com/2017/11/30/bc1f4d0c8f91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="gngshn">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gngshn的博客">
-      <meta itemprop="description" content="linux程序员一枚">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | gngshn的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/11/30/bc1f4d0c8f91/" class="post-title-link" itemprop="url">arm64_linux启动流程分析05_配置内核启动的临时页表</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-11-30 12:00:28" itemprop="dateCreated datePublished" datetime="2017-11-30T12:00:28+08:00">2017-11-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-11 09:53:13" itemprop="dateModified" datetime="2024-07-11T09:53:13+08:00">2024-07-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/arm/" itemprop="url" rel="index"><span itemprop="name">arm</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这篇内容讲讲页表的配置, 为了kernel运行速度加快, 我们需要启动cache, 启动cache需要先启动MMU让CPU运行到虚拟地址上, 那么我们就需要启动一个能覆盖KERNEL内存区域的页表.</p>
-<p>本篇内容假设在您对MMU有一定的了解的基础上来讲述的.</p>
-<p>我们假设使用4K页来管理内存, 同时虚拟地址使用48位地址</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/11/30/bc1f4d0c8f91/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
